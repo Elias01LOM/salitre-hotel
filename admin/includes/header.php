@@ -14,5 +14,10 @@ $base         = BASE_URL;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?php echo htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8'); ?></title>
   <link rel="stylesheet" href="<?php echo $base; ?>assets/css/admin/dashboard.css">
+<?php if (!empty($extra_css) && is_array($extra_css)) : ?>
+<?php   foreach ($extra_css as $css) : ?>
+  <link rel="stylesheet" href="<?php echo $base . htmlspecialchars(ltrim((string) $css, '/'), ENT_QUOTES, 'UTF-8'); ?>">
+<?php   endforeach; ?>
+<?php endif; ?>
 </head>
 <body class="admin-body">
