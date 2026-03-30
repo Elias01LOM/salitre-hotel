@@ -11,11 +11,11 @@ if (!defined('BASE_URL')) {
 
 $base = BASE_URL;
 $home = $base . 'client/';
-$nav_espacios_href = $base . 'client/espacios/';
-$experiencia = $base . 'client/proyecto/';
+$nav_espacios_href = $base . 'client/espacios/index.php';
+$experiencia = $base . 'client/proyecto/index.php';
+$agenda = $base . 'client/agenda/index.php';
 $reservar = $base . 'client/carrito/';
 $auth_login = $base . 'client/auth/login.php';
-$auth_registro = $base . 'client/auth/registro.php';
 $auth_logout = $base . 'client/auth/logout.php';
 
 $cliente_logueado = !empty($_SESSION['cliente_id']);
@@ -30,6 +30,9 @@ $cliente_nombre = isset($_SESSION['cliente_nombre']) ? (string) $_SESSION['clien
       </li>
       <li>
         <a href="<?php echo htmlspecialchars($experiencia, ENT_QUOTES, 'UTF-8'); ?>">Experiencia</a>
+      </li>
+      <li>
+        <a href="<?php echo htmlspecialchars($agenda, ENT_QUOTES, 'UTF-8'); ?>">Agenda</a>
       </li>
       <li>
         <a class="nav__cta" href="<?php echo htmlspecialchars($reservar, ENT_QUOTES, 'UTF-8'); ?>">Reservar</a>

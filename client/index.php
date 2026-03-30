@@ -39,8 +39,15 @@ require __DIR__ . '/includes/header.php';
 
 $base = BASE_URL;
 $espacios_url = $base . 'client/espacios/';
+$contacto_ok = isset($_GET['contacto']) && $_GET['contacto'] === 'ok';
+$contacto_err = isset($_GET['contacto']) && $_GET['contacto'] === 'error';
 ?>
   <main id="contenido-principal">
+<?php if ($contacto_ok) : ?>
+    <p class="site-banner site-banner--success fade-in is-visible" role="status">Gracias por tu mensaje. Te responderemos pronto.</p>
+<?php elseif ($contacto_err) : ?>
+    <p class="site-banner site-banner--error fade-in is-visible" role="alert">No pudimos enviar tu mensaje. Revisa los datos e inténtalo de nuevo.</p>
+<?php endif; ?>
     <section class="hero" aria-labelledby="hero-title">
       <!-- Imagen de fondo futura: asignar background-image a .hero__bg (o imagen dentro de este bloque) -->
       <div class="hero__bg hero__bg-slot" aria-hidden="true"></div>
