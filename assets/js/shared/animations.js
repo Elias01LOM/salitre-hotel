@@ -1,47 +1,38 @@
-/* Creamos las animaciones al entrar en viewport sin bloquear el hilo principal. Se usa IntersectionObserver (asíncrono respecto al render principal) */
-(function () {
-  "use strict";
+(() => {
+  const run = () => {
+    const elements = Array.from(document.querySelectorAll('.fade-in'));
 
-  var selector = ".fade-in";
-
-  function initFadeIn() {
-    var nodes = document.querySelectorAll(selector);
-    if (!nodes.length) {
+    if (elements.length === 0) {
       return;
     }
 
-    if (!("IntersectionObserver" in window)) {
-      nodes.forEach(function (el) {
-        el.classList.add("is-visible");
-      });
+    if (!('IntersectionObserver' in window)) {
+      elements.forEach((el) => el.classList.add('visible'));
       return;
     }
 
-    var observer = new IntersectionObserver(
-      function (entries, obs) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) {
-            return;
-          }
-          entry.target.classList.add("is-visible");
-          obs.unobserve(entry.target);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
         });
       },
       {
-        root: null,
-        rootMargin: "0px 0px -8% 0px",
-        threshold: 0.08,
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px',
       }
     );
 
-    nodes.forEach(function (el) {
-      observer.observe(el);
-    });
+    elements.forEach((el) => observer.observe(el));
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+    return;
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initFadeIn);
-  } else {
-    initFadeIn();
-  }
+  run();
 })();
+

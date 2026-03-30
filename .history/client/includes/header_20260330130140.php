@@ -30,4 +30,3 @@ if (!empty($extraCss)) {
 ?>
 </head>
 <body>
-    
