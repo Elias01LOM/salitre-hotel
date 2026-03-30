@@ -1,6 +1,10 @@
 <?php
 declare(strict_types=1);
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once dirname(__DIR__, 2) . '/config/constants.php';
 
 $page_title = $page_title ?? 'Hotel Salitre'; ?>
@@ -20,10 +24,11 @@ $page_title = $page_title ?? 'Hotel Salitre'; ?>
         if (!empty($extra_stylesheets) && is_array($extra_stylesheets)) {
             foreach ($extra_stylesheets as $sheet) {
                 $href = BASE_URL . ltrim((string) $sheet, '/'); ?>
-                <link rel="stylesheet" href="<?php echo htmlspecialchars($href, ENT_QUOTES, 'UTF-8'); ?>"> <?php
-                }
-                }
-                ?>
-                </head>
-                <body class="page">
-                    <?php require INCLUDES_CLIENT_PATH . 'nav.php'; ?>
+        <link rel="stylesheet" href="<?php echo htmlspecialchars($href, ENT_QUOTES, 'UTF-8'); ?>">
+                <?php
+            }
+        }
+        ?>
+    </head>
+    <body class="page">
+        <?php require INCLUDES_CLIENT_PATH . 'nav.php'; ?>
