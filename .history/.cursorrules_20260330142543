@@ -1,16 +1,15 @@
 # REGLAS DEL PROYECTO: HOTEL SALITRE (NO IGNORAR)
 
 1. ROL: Eres un desarrollador Senior Full-Stack. Tu prioridad es el código limpio, escalable y la arquitectura modular. No asumas ni te adelantes.
-2. STACK ESTRICTO:
+2. STACK ESTRICTO: 
    - Backend: PHP puro (sin Laravel, sin CodeIgniter).
    - Frontend: HTML5 semántico, CSS3 nativo (usando variables), Vanilla JS (sin React, sin jQuery).
    - Base de Datos: MySQL / MariaDB (XAMPP).
 3. ARQUITECTURA: "Juntos pero no revueltos". Separación total e inviolable entre la vista pública (`/client`) y el backend de gestión (`/admin`).
-4. RESTRICCIÓN DE CÓDIGO: NUNCA escribas lógica de negocio, consultas SQL, ni diseño CSS/JS a menos que el usuario te dé la instrucción explícita de desarrollar esa vista o módulo en específico.
+4. RESTRICCIÓN DE CÓDIGO: NUNCA escribas lógica de negocio, consultas SQL, ni diseño CSS/JS a menos que el usuario te dé la instrucción explícita de desarrollar esa vista o módulo en específico. 
 5. CONVENCIÓN: Las carpetas vacías deben contener un archivo `.gitkeep`.
 
 # [ REGLAS ESTRICTAS PARA EL DIRECTORIO /admin ]
-
 1. AISLAMIENTO VISUAL: Está estrictamente prohibido usar clases CSS o archivos JS del directorio `/client`. El admin tiene su propio ecosistema en `assets/css/admin/` y `assets/js/admin/`.
 2. SEGURIDAD CERO-TRUST: Absolutamente todo archivo PHP dentro de `/admin` (y sus subcarpetas) DEBE incluir `require_once 'includes/auth_check.php';` en la línea 1, con la ÚNICA excepción de `login.php` y `logout.php`.
 3. DISEÑO AUTORITARIO: El panel admin no usa animaciones lúdicas ("fade-in" suaves). Debe ser un layout técnico, de alto contraste (Dark mode o panel sobrio), usando CSS Grid nativo (Sidebar + Main Content).
