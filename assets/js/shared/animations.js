@@ -6,7 +6,7 @@
 /**
  * initScrollAnimations()
  * ─────────────────────
- * Observa todos los elementos con [data-animate] y les añade
+ * Observa todos los elementos con clase .fade-in y les añade
  * la clase "is-visible" cuando entran en el viewport.
  *
  * Uso en HTML:
@@ -47,8 +47,8 @@
    * rootMargin: dispara un poco antes de que aparezca en pantalla.
    */
   var OBSERVER_OPTIONS = {
-    threshold: 0.15,
-    rootMargin: '0px 0px -40px 0px',
+    threshold: 0.05,
+    rootMargin: '0px 0px 50px 0px',
   };
 
   /**
@@ -61,7 +61,7 @@
     var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) {
       // Revelar todo inmediatamente sin animación
-      document.querySelectorAll('[data-animate]').forEach(function (el) {
+      document.querySelectorAll('.fade-in').forEach(function (el) {
         el.classList.add('is-visible');
       });
       return;
@@ -69,7 +69,12 @@
 
     var observer = new IntersectionObserver(onIntersect, OBSERVER_OPTIONS);
 
-    document.querySelectorAll('[data-animate]').forEach(function (el) {
+    /*
+     * Se observan todos los elementos con clase .fade-in para aplicar
+     * la animacion de aparicion al hacer scroll. Esto coincide con el
+     * CSS definido en main.css (.fade-in / .fade-in.is-visible).
+     */
+    document.querySelectorAll('.fade-in').forEach(function (el) {
       // Aplicar delay escalonado si se especifica data-delay (ms)
       var delay = el.dataset.delay;
       if (delay) {
@@ -77,6 +82,36 @@
       }
       observer.observe(el);
     });
+
+    /*
+     * Fallback: revelar inmediatamente los elementos que ya están
+     * dentro del viewport al cargar la página. El IntersectionObserver
+     * no siempre dispara su callback para elementos que ya están
+     * visibles en el momento del observe().
+     */
+    function checkVisibility() {
+      var remaining = document.querySelectorAll('.fade-in:not(.is-visible)');
+      remaining.forEach(function (el) {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight + 50 && rect.bottom > -50) {
+          el.classList.add('is-visible');
+          observer.unobserve(el);
+        }
+      });
+      // Si ya no quedan elementos, quitar el listener de scroll
+      if (remaining.length === 0) {
+        window.removeEventListener('scroll', onScrollFallback);
+      }
+    }
+
+    function onScrollFallback() {
+      requestAnimationFrame(checkVisibility);
+    }
+
+    // Verificar al cargar
+    setTimeout(checkVisibility, 100);
+    // Verificar al hacer scroll (por si el observer falla)
+    window.addEventListener('scroll', onScrollFallback, { passive: true });
   }
 
   /**
