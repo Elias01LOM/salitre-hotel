@@ -1,11 +1,10 @@
 <?php
 declare(strict_types=1);
-// procesar_contacto.php — Formulario público de contacto
-// Ubicación correcta: client/ (raíz del cliente)
-// Movido desde client/includes/ — rutas actualizadas
+// procesar_contacto.php — Formulario publico de contacto
+// Ubicacion: client/includes/ (segun documentacion seccion 02.1)
 
-require_once dirname(__DIR__) . '/config/constants.php';
-require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(dirname(__DIR__)) . '/config/constants.php';
+require_once dirname(dirname(__DIR__)) . '/config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre  = trim($_POST['nombre']  ?? '');

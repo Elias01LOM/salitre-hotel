@@ -28,8 +28,17 @@ $base = BASE_URL;
 ?>
 
 <section id="hero" class="hero">
+<!-- 
+  RECURSO: Video de fondo para hero section
+  FORMATO: MP4 (H.264) + WebM (VP9) fallback
+  DIMENSIONES: 1920x1080px | PESO MAXIMO: 5MB
+  CARACTERISTICAS: Sin audio, loop, autoplay
+  UBICACION: assets/video/hero-bg.mp4
+  TEMPORAL: Se muestra fondo solido (var(--color-text)) mientras no exista
+-->
   <video class="hero__video" autoplay muted loop playsinline>
     <source src="<?= $base ?>assets/video/hero-bg.mp4" type="video/mp4">
+    <source src="<?= $base ?>assets/video/hero-bg.webm" type="video/webm">
   </video>
   <div class="hero__overlay" aria-hidden="true"></div>
   <div class="hero__content">
@@ -191,8 +200,9 @@ $service_icons = [
         <p class="contacto__text alert--error" role="alert">No pudimos enviar tu mensaje. Inténtalo de nuevo.</p>
 <?php endif; ?>
 
+        <!-- Formulario de contacto: procesar_contacto.php en client/includes/ -->
         <form class="contact-form" method="post"
-              action="<?= htmlspecialchars($base . 'client/procesar_contacto.php', ENT_QUOTES, 'UTF-8') ?>">
+              action="<?= htmlspecialchars($base . 'client/includes/procesar_contacto.php', ENT_QUOTES, 'UTF-8') ?>">
           <div class="field">
             <label class="field__label" for="contacto-nombre">Nombre</label>
             <input class="field__input" type="text" id="contacto-nombre" name="nombre"
