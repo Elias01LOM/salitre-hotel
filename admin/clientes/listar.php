@@ -9,13 +9,14 @@ require_once dirname(__DIR__, 2) . '/config/database.php';
 $clientes = [];
 try {
     $pdo  = conectarDB();
-    $stmt = $pdo->query(
+    $stmt = $pdo->prepare(
         'SELECT c.*, COUNT(r.id) as total_reservas 
          FROM clientes c 
          LEFT JOIN reservas r ON c.id = r.cliente_id 
          GROUP BY c.id 
          ORDER BY c.creado_en DESC'
     );
+    $stmt->execute();
     $clientes = $stmt->fetchAll();
 } catch (Throwable $e) {
     error_log('Admin clientes/listar: ' . $e->getMessage());

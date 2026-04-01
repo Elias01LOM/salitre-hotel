@@ -16,7 +16,8 @@ require_once dirname(__DIR__) . "/includes/sidebar.php";
 $eventos = [];
 try {
     $pdo = conectarDB();
-    $stmt = $pdo->query("SELECT * FROM eventos ORDER BY fecha_evento DESC");
+    $stmt = $pdo->prepare("SELECT * FROM eventos ORDER BY fecha_evento DESC");
+    $stmt->execute();
     $eventos = $stmt->fetchAll();
 } catch (PDOException $e) {
     error_log("Error listando eventos: " . $e->getMessage());

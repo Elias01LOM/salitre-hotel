@@ -9,9 +9,10 @@ require_once dirname(__DIR__, 2) . '/config/database.php';
 $espacios = [];
 try {
     $pdo   = conectarDB();
-    $stmt  = $pdo->query(
+    $stmt  = $pdo->prepare(
         'SELECT id, nombre, slug, tipo, precio_noche, capacidad, activo FROM espacios ORDER BY id ASC'
     );
+    $stmt->execute();
     $espacios = $stmt->fetchAll();
 } catch (Throwable $e) {
     error_log('Admin espacios/listar: ' . $e->getMessage());

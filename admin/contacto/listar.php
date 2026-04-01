@@ -9,11 +9,12 @@ require_once dirname(__DIR__, 2) . '/config/database.php';
 $mensajes = [];
 try {
     $pdo  = conectarDB();
-    $stmt = $pdo->query(
+    $stmt = $pdo->prepare(
         'SELECT id, nombre, email, mensaje, leido, creado_en
          FROM contacto
          ORDER BY leido ASC, creado_en DESC'
     );
+    $stmt->execute();
     $mensajes = $stmt->fetchAll();
 } catch (Throwable $e) {
     error_log('Admin contacto/listar: ' . $e->getMessage());

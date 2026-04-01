@@ -9,7 +9,7 @@ require_once dirname(__DIR__, 2) . '/config/database.php';
 $reservas = [];
 try {
     $pdo  = conectarDB();
-    $stmt = $pdo->query(
+    $stmt = $pdo->prepare(
         'SELECT
            r.id,
            c.nombre  AS cliente,
@@ -24,6 +24,7 @@ try {
          JOIN espacios  e ON r.espacio_id  = e.id
          ORDER BY r.creado_en DESC'
     );
+    $stmt->execute();
     $reservas = $stmt->fetchAll();
 } catch (Throwable $e) {
     error_log('Admin reservas/listar: ' . $e->getMessage());
