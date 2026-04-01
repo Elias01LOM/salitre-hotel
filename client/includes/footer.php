@@ -21,8 +21,14 @@
     </div>
 </footer>
 
-<script src="<?= $base ?>assets/js/shared/animations.js"></script>
-<script src="<?= $base ?>assets/js/client/main.js"></script>
+<script src="<?= $base ?>assets/js/shared/animations.js" defer></script>
+<script src="<?= $base ?>assets/js/client/main.js" defer></script>
+
+<?php if (isset($extra_scripts) && is_array($extra_scripts)): ?>
+    <?php foreach ($extra_scripts as $script): ?>
+        <script src="<?= htmlspecialchars($base . $script, ENT_QUOTES, 'UTF-8') ?>" defer></script>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 </body>
 </html>

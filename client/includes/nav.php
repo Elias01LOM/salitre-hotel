@@ -7,7 +7,7 @@ $base = BASE_URL;
         <a href="<?= $base ?>client/index.php" class="nav__logo">
             Salitre
         </a>
-        <ul class="nav__list">
+        <ul class="nav__list" id="nav-menu">
             <li><a href="<?= $base ?>client/index.php#hero" class="nav__link">Inicio</a></li>
             <li><a href="<?= $base ?>client/index.php#espacios" class="nav__link">Espacios</a></li>
             <li><a href="<?= $base ?>client/index.php#servicios" class="nav__link">Servicios</a></li>
@@ -23,5 +23,13 @@ $base = BASE_URL;
                 <a href="<?= $base ?>client/auth/registro.php" class="btn btn-primary btn-sm">Registrarme</a>
             <?php endif; ?>
         </div>
+        <button class="nav__hamburger" id="nav-toggle"
+                aria-label="Abrir menú"
+                aria-expanded="false"
+                aria-controls="nav-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
     </div>
 </nav>
