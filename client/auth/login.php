@@ -1,55 +1,65 @@
 <?php
-declare(strict_types=1);
+session_start();
+require_once dirname(__DIR__) . "/../config/database.php";
+require_once dirname(__DIR__) . "/../config/constants.php";
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once dirname(__DIR__, 2) . '/config/constants.php';
-
-if (!empty($_SESSION['cliente_id'])) {
-    header('Location: ' . BASE_URL . 'client/', true, 302);
+// Si ya hay sesión, redirect según ?redirect o home
+if (isset($_SESSION["cliente_id"])) {
+    $redirect = $_GET["redirect"] ?? "home";
+    if ($redirect === "carrito") {
+        header("Location: " . BASE_URL . "client/carrito/index.php");
+    } else {
+        header("Location: " . BASE_URL . "client/index.php");
+    }
     exit;
 }
 
-$page_title = 'Iniciar sesión · Hotel Salitre';
-$extra_stylesheets = ['assets/css/client/auth.css'];
+$page_title = "Iniciar Sesión — Hotel Salitre";
+$extra_stylesheets = ["assets/css/client/auth.css"];
 
-$error = isset($_GET['error']) ? (string) $_GET['error'] : '';
-$mensajes = [
-  'credenciales' => 'Email o contraseña incorrectos.',
-  'campos' => 'Completa todos los campos.',
-  'sistema' => 'Error temporal. Intenta de nuevo.',
-  ];
-  $msg_error = $mensajes[$error] ?? '';
-  
-  require dirname(__DIR__) . '/includes/header.php';
-  
-  $base = BASE_URL;
-  $action = $base . 'client/auth/procesar_auth.php';
-  $registro = $base . 'client/auth/registro.php';
-  ?>
-  <main id="contenido-principal" class="auth-page">
+require_once dirname(__DIR__) . "/includes/header.php";
+require_once dirname(__DIR__) . "/includes/nav.php";
+$base = BASE_URL;
+?>
+
+<div class="page-offset"></div>
+
+<section class="auth-section section-pad flex-center">
     <div class="auth-card fade-in">
-      <h1 class="auth-card__title">Iniciar sesión</h1>
-      <p class="auth-card__lead">Accede para gestionar tus reservas.</p>
-      <?php if ($msg_error !== '') : ?>
-        <p class="auth-alert auth-alert--error" role="alert"><?php echo htmlspecialchars($msg_error, ENT_QUOTES, 'UTF-8'); ?></p>
+        
+        <h1 class="auth-card__title">Iniciar Sesión</h1>
+        <p class="auth-card__subtitle text-muted">Accede para gestionar tus reservas.</p>
+
+        <?php if (isset($_GET['error']) && $_GET['error'] === '1') : ?>
+            <div class="alert alert--error mb-4">
+                <p>Correo o contraseña incorrectos.</p>
+            </div>
         <?php endif; ?>
-        <form class="auth-form" method="post" action="<?php echo htmlspecialchars($action, ENT_QUOTES, 'UTF-8'); ?>" novalidate>
-          <input type="hidden" name="accion" value="login">
-          <div class="auth-form__field">
-            <label class="auth-form__label" for="email">Email</label>
-            <input class="auth-form__input" type="email" id="email" name="email" required autocomplete="email">
-          </div>
-          <div class="auth-form__field">
-            <label class="auth-form__label" for="password">Contraseña</label>
-            <input class="auth-form__input" type="password" id="password" name="password" required autocomplete="current-password">
-          </div>
-          <button class="auth-form__submit" type="submit">Entrar</button>
+
+        <form action="<?= $base ?>client/auth/procesar_auth.php" method="POST" class="auth-form">
+            <input type="hidden" name="action" value="login">
+            <?php if (isset($_GET['redirect'])) : ?>
+                <input type="hidden" name="redirect" value="<?= htmlspecialchars((string)$_GET['redirect'], ENT_QUOTES, 'UTF-8') ?>">
+            <?php endif; ?>
+
+            <div class="field">
+                <label for="email" class="field__label">Correo electrónico</label>
+                <input type="email" id="email" name="email" class="field__input" required autocomplete="email" placeholder="hola@ejemplo.com">
+            </div>
+
+            <div class="field">
+                <label for="password" class="field__label">Contraseña</label>
+                <input type="password" id="password" name="password" class="field__input" required autocomplete="current-password" placeholder="Tu clave segura">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full mt-2" style="justify-content:center;">Ingresar</button>
         </form>
-        <p class="auth-form__footer">¿No tienes cuenta? <a href="<?php echo htmlspecialchars($registro, ENT_QUOTES, 'UTF-8'); ?>">Regístrate</a></p>
-      </div>
-    </main>
-    <?php
-    require dirname(__DIR__) . '/includes/footer.php';
+
+        <div class="auth-card__footer mt-6 text-center text-sm">
+            <p class="text-muted">¿No tienes cuenta? <a href="<?= $base ?>client/auth/registro.php" class="text-accent fw-600">Regístrate aquí</a></p>
+        </div>
+
+    </div>
+</section>
+
+<?php require dirname(__DIR__) . "/includes/footer.php"; ?>

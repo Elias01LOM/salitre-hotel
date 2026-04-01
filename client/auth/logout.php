@@ -1,18 +1,7 @@
 <?php
-declare(strict_types=1);
+session_start();
+require_once dirname(__DIR__) . "/../config/constants.php";
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once dirname(__DIR__, 2) . '/config/constants.php';
-
-$_SESSION = [];
-if (ini_get('session.use_cookies')) {
-    $p = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
-}
 session_destroy();
-
-header('Location: ' . BASE_URL . 'client/', true, 302);
+header("Location: " . BASE_URL . "client/index.php");
 exit;
