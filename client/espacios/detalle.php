@@ -1,105 +1,147 @@
 <?php
-declare(strict_types=1);
+session_start();
+require_once dirname(__DIR__) . "/../config/database.php";
+require_once dirname(__DIR__) . "/../config/constants.php";
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once dirname(__DIR__, 2) . '/config/constants.php';
-require_once dirname(__DIR__, 2) . '/config/database.php';
-
-$slug = isset($_GET['slug']) ? trim((string) $_GET['slug']) : '';
-if ($slug === '') {
-    header('Location: ' . BASE_URL . 'client/espacios/', true, 302);
-    exit;
-}
+$slug = filter_var($_GET["slug"] ?? "", FILTER_SANITIZE_SPECIAL_CHARS);
+if (empty($slug)) { header("Location: index.php"); exit; }
 
 $pdo = conectarDB();
-$stmt = $pdo->prepare(
-    'SELECT id, nombre, slug, tipo, descripcion, precio_noche, capacidad, amenidades
-     FROM espacios WHERE slug = ? AND activo = 1 LIMIT 1'
-);
+$stmt = $pdo->prepare("SELECT * FROM espacios WHERE slug = ? AND activo = 1");
 $stmt->execute([$slug]);
-$espacio = $stmt->fetch(PDO::FETCH_ASSOC);
+$espacio = $stmt->fetch();
 
-if ($espacio === false) {
-    header('Location: ' . BASE_URL . 'client/espacios/', true, 302);
-    exit;
-}
+if (!$espacio) { header("Location: index.php"); exit; }
 
-$amenidades_raw = $espacio['amenidades'] ?? '[]';
-$amenidades = json_decode(is_string($amenidades_raw) ? $amenidades_raw : json_encode($amenidades_raw), true);
-if (!is_array($amenidades)) {
-    $amenidades = [];
-}
+$page_title = $espacio["nombre"] . " — Hotel Salitre";
+$extra_stylesheets = ["assets/css/client/espacios.css"];
+$extra_scripts = ["assets/js/client/espacios.js"];
 
-$tipo_labels = [
-    'estudio' => 'Estudio',
-    'loft' => 'Loft',
-    'suite' => 'Suite',
-    'villa' => 'Villa',
-];
-$tipo_key = (string) ($espacio['tipo'] ?? '');
-$tipo_txt = $tipo_labels[$tipo_key] ?? $tipo_key;
-
-$precio_fmt = number_format((float) ($espacio['precio_noche'] ?? 0), 2, ',', '.');
-$capacidad = (int) ($espacio['capacidad'] ?? 0);
-
-$page_title = (string) ($espacio['nombre'] ?? 'Espacio') . ' · Hotel Salitre';
-$extra_stylesheets = ['assets/css/client/espacios.css'];
-
-require dirname(__DIR__) . '/includes/header.php';
-
+require_once dirname(__DIR__) . "/includes/header.php";
+require_once dirname(__DIR__) . "/includes/nav.php";
 $base = BASE_URL;
-$reservar_href = $base . 'client/carrito/index.php?espacio_id=' . rawurlencode((string) ($espacio['id'] ?? ''));
+
+// Parse data
+$amenidades = json_decode((string)$espacio['amenidades'], true) ?? [];
+$fotos_galeria = !empty($espacio['fotos_galeria']) ? json_decode((string)$espacio['fotos_galeria'], true) : [];
+if (!is_array($fotos_galeria)) $fotos_galeria = [];
+
+$foto_primaria = !empty($espacio['foto_principal']) ? $espacio['foto_principal'] : null;
+
+// Preparar lista total de fotos para la galeria
+$todas_fotos = [];
+if ($foto_primaria) $todas_fotos[] = $foto_primaria;
+foreach ($fotos_galeria as $f) {
+    if (!empty($f)) $todas_fotos[] = $f;
+}
 ?>
-  <main id="contenido-principal" class="detail-page">
-    <article class="detail-article fade-in">
-      <header class="detail-article__header">
-        <p class="detail-article__tipo"><?php echo htmlspecialchars($tipo_txt, ENT_QUOTES, 'UTF-8'); ?></p>
-        <h1 class="detail-article__title"><?php echo htmlspecialchars((string) ($espacio['nombre'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></h1>
-      </header>
 
-      <div class="detail-article__thumb" role="presentation" aria-hidden="true"></div>
+<div class="page-offset"></div>
 
-      <dl class="detail-meta">
-        <div class="detail-meta__row">
-          <dt>Precio por noche</dt>
-          <dd><?php echo htmlspecialchars($precio_fmt, ENT_QUOTES, 'UTF-8'); ?> <?php echo htmlspecialchars(MONEDA, ENT_QUOTES, 'UTF-8'); ?></dd>
+<section class="detalle section-pad">
+    <div class="container container--wide detalle__layout">
+        
+        <!-- Galería (60%) -->
+        <div class="detalle-galeria fade-in" data-delay="0">
+            <div class="detalle-galeria__main">
+                <?php if (!empty($todas_fotos)) : ?>
+                    <picture>
+                        <source srcset="<?= htmlspecialchars($base . $todas_fotos[0], ENT_QUOTES, 'UTF-8') ?>" type="image/webp">
+                        <img id="main-gallery-img" src="<?= htmlspecialchars($base . $todas_fotos[0], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?>" data-idx="0">
+                    </picture>
+                <?php else : ?>
+                    <div class="img-placeholder" style="aspect-ratio: 4/3;">
+                        <span><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?> - Principal</span>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <?php if (count($todas_fotos) > 1) : ?>
+                <div class="detalle-galeria__thumbs">
+                    <?php foreach ($todas_fotos as $idx => $foto) : ?>
+                        <div class="detalle-galeria__thumb <?= $idx === 0 ? 'active' : '' ?>">
+                            <img src="<?= htmlspecialchars($base . $foto, ENT_QUOTES, 'UTF-8') ?>" alt="Miniatura <?= $idx+1 ?>" data-full="<?= htmlspecialchars($base . $foto, ENT_QUOTES, 'UTF-8') ?>">
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </div>
-        <div class="detail-meta__row">
-          <dt>Capacidad</dt>
-          <dd><?php echo htmlspecialchars((string) $capacidad, ENT_QUOTES, 'UTF-8'); ?> <?php echo $capacidad === 1 ? 'persona' : 'personas'; ?></dd>
+
+        <!-- Info (40%) -->
+        <div class="detalle-info fade-in" data-delay="100">
+            <span class="badge badge--accent"><?= htmlspecialchars((string)$espacio['tipo'], ENT_QUOTES, 'UTF-8') ?></span>
+            <h1 class="detalle-info__title"><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></h1>
+            <p class="detalle-info__desc text-muted"><?= nl2br(htmlspecialchars((string)$espacio['descripcion'], ENT_QUOTES, 'UTF-8')) ?></p>
+            
+            <div class="detalle-info__meta grid grid-2 gap-4">
+                <div class="meta-card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span><strong>Capacidad:</strong> <?= (int)$espacio['capacidad'] ?> pers.</span>
+                </div>
+                <!-- Aquí se incluirían amenities de alto nivel como WiFi si se guardaran por separado,
+                     usaremos el array existente para todos. -->
+            </div>
+
+            <div class="divider"></div>
+            
+            <h3 class="detalle-info__subtitle">Amenidades</h3>
+            <?php if (!empty($amenidades)) : ?>
+                <ul class="detalle-info__amenities">
+                    <?php foreach ($amenidades as $amenidad) : ?>
+                        <li>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            <?= htmlspecialchars((string)$amenidad, ENT_QUOTES, 'UTF-8') ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else : ?>
+                <p class="text-muted">No indicadas.</p>
+            <?php endif; ?>
+
+            <!-- Panel Flotante / Sticky para Formulario de Reserva -->
+            <div class="detalle-booking-panel">
+                <div class="detalle-booking-panel__header flex-between mb-4">
+                    <div class="detalle-booking-price">
+                        <strong>$<?= number_format((float)$espacio['precio_noche'], 0) ?></strong> <small>/noche</small>
+                    </div>
+                </div>
+
+                <form id="booking-form" action="<?= $base ?>client/carrito/agregar.php" method="POST">
+                    <input type="hidden" name="espacio_id" value="<?= (int)$espacio['id'] ?>">
+                    
+                    <div class="booking-dates">
+                        <div class="field">
+                            <label for="fecha_entrada" class="field__label">Check-in</label>
+                            <input type="date" id="fecha_entrada" name="fecha_entrada" class="field__input required" min="<?= date('Y-m-d') ?>" required>
+                        </div>
+                        <div class="field">
+                            <label for="fecha_salida" class="field__label">Check-out</label>
+                            <!-- Configurado en JS basándose en fecha_entrada -->
+                            <input type="date" id="fecha_salida" name="fecha_salida" class="field__input required" disabled required>
+                        </div>
+                    </div>
+                    
+                    <div id="booking-total-preview" class="booking-preview mt-4" style="display:none;">
+                        <div class="flex-between">
+                            <span><span id="booking-nights">0</span> noches</span>
+                            <strong>$ <span id="booking-subtotal">0</span></strong>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-full mt-6" id="btn-add-cart" disabled>
+                        Reservar Fechas
+                    </button>
+                    <!-- Pasamos los datos a JS mediante atributos data del form/body -->
+                </form>
+            </div>
+
         </div>
-      </dl>
+    </div>
+</section>
 
-      <div class="detail-body">
-        <h2 class="detail-body__title">Descripción</h2>
-        <p class="detail-body__text"><?php echo nl2br(htmlspecialchars((string) ($espacio['descripcion'] ?? ''), ENT_QUOTES, 'UTF-8')); ?></p>
-      </div>
+<!-- Variables for JS -->
+<script>
+    window.ESPACIO_PRECIO = <?= (float)$espacio['precio_noche'] ?>;
+</script>
 
-      <section class="detail-amenities" aria-labelledby="amenities-title">
-        <h2 id="amenities-title" class="detail-amenities__title">Amenidades</h2>
-<?php if (count($amenidades) > 0) : ?>
-        <ul class="detail-amenities__list">
-<?php foreach ($amenidades as $item) :
-    if (!is_string($item) && !is_numeric($item)) {
-        continue;
-    }
-    $item_txt = (string) $item;
-    ?>
-          <li><?php echo htmlspecialchars($item_txt, ENT_QUOTES, 'UTF-8'); ?></li>
-<?php endforeach; ?>
-        </ul>
-<?php else : ?>
-        <p class="detail-amenities__empty">Sin amenidades registradas.</p>
-<?php endif; ?>
-      </section>
-
-      <p class="detail-actions">
-        <a class="btn-reservar" href="<?php echo htmlspecialchars($reservar_href, ENT_QUOTES, 'UTF-8'); ?>">Reservar este espacio</a>
-      </p>
-    </article>
-  </main>
-<?php
-require dirname(__DIR__) . '/includes/footer.php';
+<?php require dirname(__DIR__) . "/includes/footer.php"; ?>

@@ -1,192 +1,310 @@
-/* Definimos la estructura y estilos para el catálogo y detalle de espacios */
+/* ==================================================
+   SALITRE — espacios.css (CLIENTE)
+   Catálogo y Catálogo Detalle
+   ================================================== */
 
-.catalog-page {
-  padding-block: var(--space-12);
-  padding-inline: var(--container-pad);
-}
-.catalog-page__header {
-  max-width: var(--container-max);
-  margin-inline: auto;
-  margin-bottom: var(--space-10);
-}
-.catalog-page__title {
-  font-family: var(--font-display);
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-heading);
-  margin-bottom: var(--space-3);
-}
-.catalog-page__intro {
-  font-size: var(--font-size-md);
-  color: var(--color-text-muted);
-  max-width: 40rem;
-}
-.catalog-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-8);
-  max-width: var(--container-max);
-  margin-inline: auto;
-}
-@media (max-width: 48rem) {
-  .catalog-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.catalog-page__empty {
-  max-width: var(--container-max);
-  margin-inline: auto;
-  text-align: center;
-  color: var(--color-text-muted);
-  padding-block: var(--space-12);
+/* ====================================================
+   1. CATÁLOGO DE ESPACIOS (.espacios-catalog)
+==================================================== */
+
+.espacios-header {
+    background-color: var(--color-text);
+    color: var(--color-surface);
+    padding: var(--space-20) 0 calc(var(--space-10) + 72px);
+    margin-top: -72px; /* Compensa navbar fixed en offset visual si es necesario */
 }
 
-/* Reutilizamos las tarjetas del home como complemento para el catálogo */
-.space-card--catalog .space-card__price {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-2);
-  font-size: var(--font-size-sm);
-  color: var(--color-text);
-  margin-top: var(--space-2);
-}
-.space-card__price-label {
-  color: var(--color-text-muted);
-  font-weight: var(--font-weight-medium);
-}
-.space-card__price-value {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-accent-sand);
-}
-.space-card__price-currency {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-xs);
+.espacios-header__title {
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: var(--space-4);
 }
 
-/* Definimos la estructura y estilos para la página de 'detalle' */
-.detail-page {
-  padding-block: var(--space-12);
-  padding-inline: var(--container-pad);
+.espacios-header__subtitle {
+    font-size: var(--text-lg);
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 600px;
+    margin: 0 auto;
 }
-.detail-article {
-  max-width: 42rem;
-  margin-inline: auto;
+
+.espacios-filters {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-12);
+    flex-wrap: wrap;
 }
-.detail-article__header {
-  margin-bottom: var(--space-6);
+
+.espacios-filters .btn {
+    border-radius: var(--radius-full);
 }
-.detail-article__tipo {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-accent-gold);
-  margin-bottom: var(--space-2);
+
+.espacios-filters .btn.active {
+    background-color: var(--color-text);
+    color: var(--color-surface);
+    border-color: var(--color-text);
 }
-.detail-article__title {
-  font-family: var(--font-display);
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-heading);
-  line-height: var(--line-tight);
+
+.espacios__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
 }
-.detail-article__thumb {
-  aspect-ratio: 16 / 9;
-  border-radius: var(--radius-xl);
-  margin-bottom: var(--space-8);
-  background: linear-gradient(
-    145deg,
-    var(--color-surface-elevated) 0%,
-    var(--color-primary) 100%
-  );
-  border: 1px solid var(--color-border);
+
+@media (max-width: 1024px) {
+    .espacios__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-6);
+    }
 }
-.detail-meta {
-  display: grid;
-  gap: var(--space-4);
-  margin-bottom: var(--space-8);
-  padding: var(--space-6);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
+
+@media (max-width: 768px) {
+    .espacios__grid {
+        grid-template-columns: 1fr;
+    }
 }
-.detail-meta__row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--space-3);
+
+.espacios-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--space-12) 0;
+    color: var(--color-text-muted);
 }
-.detail-meta__row dt {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-muted);
+
+/* ====================================================
+   2. TARJETA ESPACIO (.catalog-card)
+==================================================== */
+
+.catalog-card {
+    display: flex; /* Base config extends .space-card from main or unique */
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
-.detail-meta__row dd {
-  margin: 0;
-  font-size: var(--font-size-md);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-heading);
+
+.catalog-card__meta {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin: var(--space-2) 0 var(--space-4);
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
 }
-.detail-body {
-  margin-bottom: var(--space-10);
+
+.catalog-card__amenities {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-6);
+    flex-grow: 1;
 }
-.detail-body__title {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  color: var(--color-heading);
-  margin-bottom: var(--space-3);
+
+.catalog-card__amenities li {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    position: relative;
+    padding-left: var(--space-4);
+    margin-bottom: var(--space-1);
 }
-.detail-body__text {
-  font-size: var(--font-size-md);
-  color: var(--color-text-muted);
-  line-height: var(--line-relaxed);
+
+.catalog-card__amenities li::before {
+    content: "•";
+    color: var(--color-accent);
+    position: absolute;
+    left: 0;
+    font-weight: bold;
 }
-.detail-amenities {
-  margin-bottom: var(--space-10);
+
+.catalog-card__footer {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-4);
+    margin-top: auto;
 }
-.detail-amenities__title {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  color: var(--color-heading);
-  margin-bottom: var(--space-4);
+
+/* ====================================================
+   3. CLASE PLACEHOLDER GLOBAL (.img-placeholder)
+==================================================== */
+
+.img-placeholder {
+    width: 100%;
+    min-height: 200px;
+    background-color: var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
-.detail-amenities__list {
-  margin: 0;
-  padding-left: var(--space-6);
-  list-style: disc;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-md);
-  line-height: var(--line-relaxed);
+
+/* ====================================================
+   4. DETALLE ESPACIO (.detalle)
+==================================================== */
+
+.detalle__layout {
+    display: flex;
+    gap: var(--space-12);
+    align-items: flex-start;
 }
-.detail-amenities__list li {
-  margin-bottom: var(--space-2);
+
+/* Galeria (Izquierda 60%) */
+.detalle-galeria {
+    flex: 6;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
 }
-.detail-amenities__empty {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+
+.detalle-galeria__main {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background-color: var(--color-mid);
 }
-.detail-actions {
-  margin-top: var(--space-8);
+
+.detalle-galeria__main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
 }
-.btn-reservar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-3) var(--space-8);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-primary);
-  background: var(--color-accent-gold);
-  border-radius: var(--radius-md);
-  transition:
-    transform var(--transition-fast),
-    box-shadow var(--transition-fast);
+
+.detalle-galeria__thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-2);
 }
-.btn-reservar:hover,
-.btn-reservar:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+
+.detalle-galeria__thumb {
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: var(--transition);
+    opacity: 0.6;
+}
+
+.detalle-galeria__thumb:hover,
+.detalle-galeria__thumb.active {
+    opacity: 1;
+    border-color: var(--color-accent);
+}
+
+.detalle-galeria__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Info (Derecha 40%) */
+.detalle-info {
+    flex: 4;
+}
+
+.detalle-info__title {
+    font-size: var(--text-3xl);
+    margin-top: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.detalle-info__desc {
+    font-size: var(--text-base);
+    line-height: 1.8;
+    margin-bottom: var(--space-8);
+}
+
+.detalle-info__subtitle {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-display);
+}
+
+.detalle-info__amenities {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    margin-bottom: var(--space-8);
+}
+
+.detalle-info__amenities li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}
+
+.detalle-info__amenities svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-accent);
+}
+
+.meta-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+}
+
+.meta-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--color-accent);
+}
+
+/* ====================================================
+   5. PANEL DE RESERVA FLOTANTE
+==================================================== */
+
+.detalle-booking-panel {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: calc(72px + var(--space-6)); 
+    margin-top: var(--space-8);
+}
+
+.detalle-booking-price strong {
+    font-size: var(--text-2xl);
+    color: var(--color-text);
+}
+
+.detalle-booking-price small {
+    color: var(--color-text-muted);
+}
+
+.booking-dates {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.booking-dates .field {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .detalle__layout {
+        flex-direction: column;
+    }
+    
+    .detalle-galeria, .detalle-info {
+        flex: 1;
+        width: 100%;
+    }
+    
+    .detalle-info__amenities {
+        grid-template-columns: 1fr;
+    }
 }
