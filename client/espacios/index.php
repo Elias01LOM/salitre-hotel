@@ -1,77 +1,98 @@
 <?php
-declare(strict_types=1);
+session_start();
+require_once dirname(__DIR__) . "/../config/database.php";
+require_once dirname(__DIR__) . "/../config/constants.php";
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+$pdo = conectarDB();
+$stmt = $pdo->prepare("SELECT * FROM espacios WHERE activo = 1 ORDER BY precio_noche ASC");
+$stmt->execute();
+$espacios = $stmt->fetchAll();
 
-require_once dirname(__DIR__, 2) . '/config/constants.php';
-require_once dirname(__DIR__, 2) . '/config/database.php';
+$page_title = "Espacios — Hotel Salitre";
+$extra_stylesheets = ["assets/css/client/espacios.css"];
+$extra_scripts = ["assets/js/client/espacios.js"];
 
-$espacios = [];
-
-try {
-    $pdo = conectarDB();
-    $stmt = $pdo->prepare(
-        'SELECT id, nombre, slug, tipo, descripcion, precio_noche FROM espacios WHERE activo = 1 ORDER BY nombre ASC'
-    );
-    $stmt->execute();
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    if (is_array($rows)) {
-        $espacios = $rows;
-    }
-} catch (Throwable $e) {
-    error_log('Catálogo espacios: ' . $e->getMessage());
-    $espacios = [];
-}
-
-$tipo_labels = [
-    'estudio' => 'Estudio',
-    'loft' => 'Loft',
-    'suite' => 'Suite',
-    'villa' => 'Villa',
-];
-
-$page_title = 'Catálogo de Espacios · Hotel Salitre';
-$extra_stylesheets = ['assets/css/client/espacios.css'];
-
-require dirname(__DIR__) . '/includes/header.php';
-
+require_once dirname(__DIR__) . "/includes/header.php";
+require_once dirname(__DIR__) . "/includes/nav.php";
 $base = BASE_URL;
 ?>
-  <main id="contenido-principal" class="catalog-page">
-    <header class="catalog-page__header fade-in">
-      <h1 class="catalog-page__title">Catálogo de Espacios</h1>
-      <p class="catalog-page__intro">Todos los espacios activos para trabajo y estancia.</p>
-    </header>
 
-    <div class="catalog-grid">
-<?php foreach ($espacios as $espacio) :
-    $tipo_key = (string) ($espacio['tipo'] ?? '');
-    $tipo_txt = $tipo_labels[$tipo_key] ?? $tipo_key;
-    $detalle_href = $base . 'client/espacios/detalle.php?slug=' . rawurlencode((string) ($espacio['slug'] ?? ''));
-    $precio_fmt = number_format((float) ($espacio['precio_noche'] ?? 0), 2, ',', '.');
-    ?>
-      <article class="space-card space-card--catalog fade-in">
-        <div class="space-card__thumb" role="presentation"></div>
-        <div class="space-card__body">
-          <p class="space-card__tipo"><?php echo htmlspecialchars($tipo_txt, ENT_QUOTES, 'UTF-8'); ?></p>
-          <h2 class="space-card__name"><?php echo htmlspecialchars((string) ($espacio['nombre'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></h2>
-          <p class="space-card__desc"><?php echo htmlspecialchars((string) ($espacio['descripcion'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></p>
-          <p class="space-card__price">
-            <span class="space-card__price-label">Desde</span>
-            <span class="space-card__price-value"><?php echo htmlspecialchars($precio_fmt, ENT_QUOTES, 'UTF-8'); ?></span>
-            <span class="space-card__price-currency"><?php echo htmlspecialchars(MONEDA, ENT_QUOTES, 'UTF-8'); ?> / noche</span>
-          </p>
-          <a class="space-card__link" href="<?php echo htmlspecialchars($detalle_href, ENT_QUOTES, 'UTF-8'); ?>">Ver detalles</a>
-        </div>
-      </article>
-<?php endforeach; ?>
+<header class="espacios-header flex-center flex-col text-center">
+    <div class="container">
+        <h1 class="espacios-header__title fade-in">Elige tu espacio</h1>
+        <p class="espacios-header__subtitle fade-in" data-delay="100">Cuatro formas distintas de vivir la costa, un solo estándar de comodidad.</p>
     </div>
+</header>
 
-<?php if (count($espacios) === 0) : ?>
-    <p class="catalog-page__empty" role="status">No hay espacios en el catálogo por el momento.</p>
-<?php endif; ?>
-  </main>
-<?php
-require dirname(__DIR__) . '/includes/footer.php';
+<section class="espacios-catalog section-pad">
+    <div class="container">
+        
+        <!-- Filtros de Catálogo -->
+        <div class="espacios-filters fade-in" data-delay="200" role="tablist" aria-label="Filtrar espacios por tipo">
+            <button class="btn btn-outline filter-btn active" data-tipo="todos" role="tab" aria-selected="true">Todos</button>
+            <button class="btn btn-outline filter-btn" data-tipo="Estudio" role="tab" aria-selected="false">Estudios</button>
+            <button class="btn btn-outline filter-btn" data-tipo="Loft" role="tab" aria-selected="false">Lofts</button>
+            <button class="btn btn-outline filter-btn" data-tipo="Suite" role="tab" aria-selected="false">Suites</button>
+            <button class="btn btn-outline filter-btn" data-tipo="Villa" role="tab" aria-selected="false">Villas</button>
+        </div>
+
+        <!-- Grid de Tarjetas -->
+        <div class="espacios__grid js-catalog-grid" aria-live="polite">
+            <?php if (empty($espacios)) : ?>
+                <div class="espacios-empty">
+                    <p>No hay espacios disponibles en este momento.</p>
+                </div>
+            <?php else : ?>
+                <?php foreach ($espacios as $index => $espacio) : 
+                    $amenidades = json_decode((string)$espacio['amenidades'], true) ?? [];
+                    $amenidades_top = array_slice($amenidades, 0, 3);
+                    $detalle_href = htmlspecialchars($base . 'client/espacios/detalle.php?slug=' . rawurlencode((string)$espacio['slug']), ENT_QUOTES, 'UTF-8');
+                    $tipo = htmlspecialchars((string)$espacio['tipo'], ENT_QUOTES, 'UTF-8');
+                ?>
+                    <article class="space-card catalog-card fade-in" data-tipo="<?= $tipo ?>" data-delay="<?= ($index % 3) * 100 ?>">
+                        <div class="space-card__media">
+                            <?php if (!empty($espacio['foto_principal'])) : ?>
+                                <picture>
+                                    <source srcset="<?= htmlspecialchars($base . $espacio['foto_principal'], ENT_QUOTES, 'UTF-8') ?>" type="image/webp">
+                                    <img src="<?= htmlspecialchars($base . $espacio['foto_principal'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?>" loading="lazy">
+                                </picture>
+                            <?php else : ?>
+                                <div class="img-placeholder" aria-label="Placeholder para <?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?>">
+                                    <span><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="space-card__body">
+                            <span class="space-card__badge"><?= $tipo ?></span>
+                            <div class="flex-between" style="align-items:flex-start;">
+                                <h2 class="space-card__name"><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></h2>
+                            </div>
+                            
+                            <div class="catalog-card__meta">
+                                <span class="meta-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                    Capacidad: <?= (int)$espacio['capacidad'] ?> pers.
+                                </span>
+                            </div>
+
+                            <?php if (!empty($amenidades_top)) : ?>
+                                <ul class="catalog-card__amenities">
+                                    <?php foreach ($amenidades_top as $amenidad) : ?>
+                                        <li><?= htmlspecialchars((string)$amenidad, ENT_QUOTES, 'UTF-8') ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+
+                            <div class="catalog-card__footer flex-between">
+                                <p class="space-card__price">$<?= number_format((float)$espacio['precio_noche'], 0) ?>/noche</p>
+                                <a class="btn btn-outline space-card__button" href="<?= $detalle_href ?>">Ver detalles</a>
+                            </div>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+
+<?php require dirname(__DIR__) . "/includes/footer.php"; ?>

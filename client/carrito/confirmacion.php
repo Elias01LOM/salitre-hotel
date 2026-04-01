@@ -1,100 +1,103 @@
 <?php
-declare(strict_types=1);
+session_start();
+require_once dirname(__DIR__) . "/../config/database.php";
+require_once dirname(__DIR__) . "/../config/constants.php";
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once dirname(__DIR__, 2) . '/config/constants.php';
-require_once dirname(__DIR__, 2) . '/config/database.php';
-require_once dirname(__DIR__) . '/includes/require_cliente_auth.php';
-
-$cliente_id = (int) $_SESSION['cliente_id'];
-$carrito_url = BASE_URL . 'client/carrito/';
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ' . $carrito_url, true, 302);
+// Verificar sesión cliente
+if (!isset($_SESSION["cliente_id"])) {
+    header("Location: " . BASE_URL . "client/auth/login.php");
     exit;
 }
 
-$espacio_id = isset($_POST['espacio_id']) ? (int) $_POST['espacio_id'] : 0;
-$fecha_entrada_s = isset($_POST['fecha_entrada']) ? trim((string) $_POST['fecha_entrada']) : '';
-$fecha_salida_s = isset($_POST['fecha_salida']) ? trim((string) $_POST['fecha_salida']) : '';
-
-if ($espacio_id < 1 || $fecha_entrada_s === '' || $fecha_salida_s === '') {
-    header('Location: ' . $carrito_url, true, 302);
+// Obtener folio de URL
+$reserva_id = filter_var($_GET["id"] ?? 0, FILTER_VALIDATE_INT);
+if (!$reserva_id) {
+    header("Location: " . BASE_URL . "client/espacios/index.php");
     exit;
 }
 
-$dt_entrada = DateTime::createFromFormat('Y-m-d', $fecha_entrada_s);
-$dt_salida = DateTime::createFromFormat('Y-m-d', $fecha_salida_s);
+// Consultar reserva
+try {
+    $pdo = conectarDB();
+    $stmt = $pdo->prepare(
+        "SELECT r.*, e.nombre as espacio_nombre, e.tipo as espacio_tipo 
+         FROM reservas r 
+         JOIN espacios e ON r.espacio_id = e.id 
+         WHERE r.id = ? AND r.cliente_id = ?"
+    );
+    $stmt->execute([$reserva_id, $_SESSION["cliente_id"]]);
+    $reserva = $stmt->fetch();
 
-if ($dt_entrada === false || $dt_salida === false) {
-    header('Location: ' . $carrito_url . '?espacio_id=' . $espacio_id . '&error=fechas', true, 302);
+    if (!$reserva) {
+        header("Location: " . BASE_URL . "client/espacios/index.php");
+        exit;
+    }
+} catch (PDOException $e) {
+    error_log("Error al consultar reserva para folio $reserva_id: " . $e->getMessage());
+    header("Location: " . BASE_URL . "client/index.php");
     exit;
 }
 
-if ($dt_salida <= $dt_entrada) {
-    header('Location: ' . $carrito_url . '?espacio_id=' . $espacio_id . '&error=fechas', true, 302);
-    exit;
-}
+$page_title = "Reserva Confirmada — Hotel Salitre";
+$extra_stylesheets = ["assets/css/client/carrito.css"];
 
-$intervalo = $dt_entrada->diff($dt_salida);
-$noches = (int) $intervalo->days;
-
-if ($noches < 1) {
-    header('Location: ' . $carrito_url . '?espacio_id=' . $espacio_id . '&error=fechas', true, 302);
-    exit;
-}
-
-if ($noches > 255) {
-    header('Location: ' . $carrito_url . '?espacio_id=' . $espacio_id . '&error=noches', true, 302);
-    exit;
-}
-
-$pdo = conectarDB();
-$stmtEsp = $pdo->prepare(
-    'SELECT id, precio_noche FROM espacios WHERE id = ? AND activo = 1 LIMIT 1'
-);
-$stmtEsp->execute([$espacio_id]);
-$fila_espacio = $stmtEsp->fetch(PDO::FETCH_ASSOC);
-
-if ($fila_espacio === false) {
-    header('Location: ' . BASE_URL . 'client/espacios/', true, 302);
-    exit;
-}
-
-$precio_noche = (float) $fila_espacio['precio_noche'];
-$precio_total = round($noches * $precio_noche, 2);
-
-$fecha_entrada_sql = $dt_entrada->format('Y-m-d');
-$fecha_salida_sql = $dt_salida->format('Y-m-d');
-
-$stmtIns = $pdo->prepare(
-    'INSERT INTO reservas (cliente_id, espacio_id, fecha_entrada, fecha_salida, noches, precio_total, estado)
-     VALUES (?, ?, ?, ?, ?, ?, ?)'
-);
-$stmtIns->execute([
-    $cliente_id,
-    $espacio_id,
-    $fecha_entrada_sql,
-    $fecha_salida_sql,
-    $noches,
-    $precio_total,
-    'pendiente',
-]);
-
-$page_title = 'Reserva confirmada · Hotel Salitre';
-$extra_stylesheets = ['assets/css/client/carrito.css'];
-
-require dirname(__DIR__) . '/includes/header.php';
-
-$home = BASE_URL . 'client/';
+require_once dirname(__DIR__) . "/includes/header.php";
+require_once dirname(__DIR__) . "/includes/nav.php";
+$base = BASE_URL;
 ?>
-  <main id="contenido-principal" class="confirm-page">
-    <h1 class="confirm-page__title">¡Reserva confirmada!</h1>
-    <p class="confirm-page__text">Tu solicitud quedó registrada como pendiente. Nos pondremos en contacto si hace falta confirmar detalles.</p>
-    <a class="confirm-page__btn" href="<?php echo htmlspecialchars($home, ENT_QUOTES, 'UTF-8'); ?>">Volver al inicio</a>
-  </main>
-<?php
-require dirname(__DIR__) . '/includes/footer.php';
+
+<div class="page-offset"></div>
+
+<section class="confirmacion section-pad" style="min-height: 70vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="max-width: 600px; text-align: center;">
+        
+        <div class="confirm-icon fade-in mb-6" style="display:inline-flex; align-items:center; justify-content:center; width:80px; height:80px; border-radius:50%; background:var(--color-mid); color:var(--color-success); border:3px solid var(--color-success);">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        
+        <h1 class="section-title fade-in" data-delay="100">¡Reserva Solicitada!</h1>
+        <p class="text-lg text-muted fade-in mb-8" data-delay="150" style="line-height:1.6;">
+            Tu reserva ha ingresado correctamente al sistema.<br>
+            El folio asignado es: <strong style="color:var(--color-text); font-family:monospace; font-size:1.2em;">#<?= str_pad((string)$reserva['id'], 6, '0', STR_PAD_LEFT) ?></strong>
+        </p>
+
+        <div class="summary-card text-left fade-in" data-delay="200" style="margin-bottom:var(--space-8);">
+            <h3 class="mb-4 text-accent" style="font-family:var(--font-display); font-size:var(--text-xl);">Resumen</h3>
+            <ul style="list-style:none; padding:0; margin:0;" class="gap-3 flex-col">
+                <li class="flex-between">
+                    <span class="text-muted">Espacio</span>
+                    <strong><?= htmlspecialchars((string)$reserva['espacio_nombre'], ENT_QUOTES, 'UTF-8') ?></strong>
+                </li>
+                <li class="flex-between">
+                    <span class="text-muted">Check-in</span>
+                    <span><?= date('d M, Y', strtotime($reserva['fecha_entrada'])) ?></span>
+                </li>
+                <li class="flex-between">
+                    <span class="text-muted">Check-out</span>
+                    <span><?= date('d M, Y', strtotime($reserva['fecha_salida'])) ?></span>
+                </li>
+                <li class="flex-between">
+                    <span class="text-muted">Estancia</span>
+                    <span><?= (int)$reserva['noches'] ?> noches</span>
+                </li>
+                <li class="flex-between" style="border-top:1px dashed var(--color-border); padding-top:var(--space-3); margin-top:var(--space-3);">
+                    <span class="fw-600 text-lg">Total</span>
+                    <strong class="text-accent text-lg">$<?= number_format((float)$reserva['precio_total'], 2) ?></strong>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="alert fade-in text-left mb-8" data-delay="250" style="background:var(--color-bg); border-left:3px solid var(--color-accent);">
+            <p class="text-sm text-muted">Te contactaremos en las próximas 24-48 horas a través de los datos de tu perfil para confirmar disponibilidad definitiva y los pasos para el pago.</p>
+        </div>
+
+        <div class="fade-in" data-delay="300">
+            <a href="<?= $base ?>client/index.php" class="btn btn-outline btn-lg" style="width:100%; justify-content:center;">Volver al Home</a>
+        </div>
+
+    </div>
+</section>
+
+<?php require dirname(__DIR__) . "/includes/footer.php"; ?>

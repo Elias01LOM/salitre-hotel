@@ -1,65 +1,91 @@
 <?php
-declare(strict_types=1);
+session_start();
+require_once dirname(__DIR__) . "/../config/database.php";
+require_once dirname(__DIR__) . "/../config/constants.php";
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require_once dirname(__DIR__, 2) . '/config/constants.php';
-
-if (!empty($_SESSION['cliente_id'])) {
-    header('Location: ' . BASE_URL . 'client/', true, 302);
+// Si ya hay sesión, redirect a home
+if (isset($_SESSION["cliente_id"])) {
+    header("Location: " . BASE_URL . "client/index.php");
     exit;
 }
 
-$page_title = 'Crear cuenta · Hotel Salitre';
-$extra_stylesheets = ['assets/css/client/auth.css'];
+$page_title = "Crear Cuenta — Hotel Salitre";
+$extra_stylesheets = ["assets/css/client/auth.css"];
 
-$error = isset($_GET['error']) ? (string) $_GET['error'] : '';
-$mensajes = [
-    'campos' => 'Completa nombre, email y contraseña.',
-    'email' => 'El email no es válido.',
-    'password' => 'La contraseña debe tener al menos 8 caracteres.',
-    'existe' => 'Ya existe una cuenta con ese email.',
-    'sistema' => 'Error temporal. Intenta de nuevo.',
-];
-$msg_error = $mensajes[$error] ?? '';
-
-require dirname(__DIR__) . '/includes/header.php';
-
+require_once dirname(__DIR__) . "/includes/header.php";
+require_once dirname(__DIR__) . "/includes/nav.php";
 $base = BASE_URL;
-$action = $base . 'client/auth/procesar_auth.php';
-$login = $base . 'client/auth/login.php';
 ?>
-  <main id="contenido-principal" class="auth-page">
-    <div class="auth-card fade-in">
-      <h1 class="auth-card__title">Crear cuenta</h1>
-      <p class="auth-card__lead">Únete para reservar espacios en Salitre.</p>
-<?php if ($msg_error !== '') : ?>
-      <p class="auth-alert auth-alert--error" role="alert"><?php echo htmlspecialchars($msg_error, ENT_QUOTES, 'UTF-8'); ?></p>
-<?php endif; ?>
-      <form class="auth-form" method="post" action="<?php echo htmlspecialchars($action, ENT_QUOTES, 'UTF-8'); ?>" novalidate>
-        <input type="hidden" name="accion" value="registro">
-        <div class="auth-form__field">
-          <label class="auth-form__label" for="nombre">Nombre</label>
-          <input class="auth-form__input" type="text" id="nombre" name="nombre" required autocomplete="name" maxlength="100">
+
+<div class="page-offset"></div>
+
+<section class="auth-section section-pad flex-center">
+    <div class="auth-card fade-in" data-delay="100">
+        
+        <h1 class="auth-card__title">Crear Cuenta</h1>
+        <p class="auth-card__subtitle text-muted">Acelera tus reservas como Huésped Registrado.</p>
+
+        <?php if (isset($_GET['error'])) : ?>
+            <div class="alert alert--error mb-4">
+                <?php if ($_GET['error'] === 'email_exists') : ?>
+                    <p>Este correo ya está registrado.</p>
+                <?php elseif ($_GET['error'] === 'passwords_mismatch') : ?>
+                    <p>Las contraseñas no coinciden.</p>
+                <?php elseif ($_GET['error'] === 'short_password') : ?>
+                    <p>La contraseña debe tener al menos 6 caracteres.</p>
+                <?php elseif ($_GET['error'] === 'empty_fields') : ?>
+                    <p>Todos los campos son obligatorios.</p>
+                <?php elseif ($_GET['error'] === 'invalid_email') : ?>
+                    <p>El formato del correo es inválido.</p>
+                <?php else : ?>
+                    <p>Ocurrió un error. Intenta de nuevo.</p>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <form action="<?= $base ?>client/auth/procesar_auth.php" method="POST" class="auth-form" onsubmit="return validatePasswords()">
+            <input type="hidden" name="action" value="registro">
+
+            <div class="field">
+                <label for="nombre" class="field__label">Nombre completo</label>
+                <input type="text" id="nombre" name="nombre" class="field__input" required autocomplete="name" placeholder="Ej. Ana García">
+            </div>
+
+            <div class="field">
+                <label for="email" class="field__label">Correo electrónico</label>
+                <input type="email" id="email" name="email" class="field__input" required autocomplete="email" placeholder="hola@ejemplo.com">
+            </div>
+
+            <div class="field">
+                <label for="password" class="field__label">Contraseña</label>
+                <input type="password" id="password" name="password" class="field__input" required minlength="6" placeholder="Mínimo 6 caracteres">
+            </div>
+
+            <div class="field">
+                <label for="confirmar_password" class="field__label">Confirmar contraseña</label>
+                <input type="password" id="confirmar_password" name="confirmar_password" class="field__input" required minlength="6" placeholder="Repite tu contraseña">
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full mt-4" style="justify-content:center;">Registrarme</button>
+        </form>
+
+        <div class="auth-card__footer mt-6 text-center text-sm">
+            <p class="text-muted">¿Ya tienes cuenta? <a href="<?= $base ?>client/auth/login.php" class="text-accent fw-600">Inicia sesión</a></p>
         </div>
-        <div class="auth-form__field">
-          <label class="auth-form__label" for="email">Email</label>
-          <input class="auth-form__input" type="email" id="email" name="email" required autocomplete="email">
-        </div>
-        <div class="auth-form__field">
-          <label class="auth-form__label" for="password">Contraseña</label>
-          <input class="auth-form__input" type="password" id="password" name="password" required autocomplete="new-password" minlength="8">
-        </div>
-        <div class="auth-form__field">
-          <label class="auth-form__label" for="telefono">Teléfono</label>
-          <input class="auth-form__input" type="tel" id="telefono" name="telefono" autocomplete="tel" maxlength="20">
-        </div>
-        <button class="auth-form__submit" type="submit">Registrarme</button>
-      </form>
-      <p class="auth-form__footer">¿Ya tienes cuenta? <a href="<?php echo htmlspecialchars($login, ENT_QUOTES, 'UTF-8'); ?>">Inicia sesión</a></p>
+
     </div>
-  </main>
-<?php
-require dirname(__DIR__) . '/includes/footer.php';
+</section>
+
+<script>
+function validatePasswords() {
+    var pwd1 = document.getElementById("password").value;
+    var pwd2 = document.getElementById("confirmar_password").value;
+    if (pwd1 !== pwd2) {
+        alert("Las contraseñas no coinciden. Por favor, corrígelo.");
+        return false;
+    }
+    return true;
+}
+</script>
+
+<?php require dirname(__DIR__) . "/includes/footer.php"; ?>

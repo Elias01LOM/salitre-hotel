@@ -1,149 +1,146 @@
 <?php
-declare(strict_types=1);
+session_start();
+require_once dirname(__DIR__) . "/../config/database.php";
+require_once dirname(__DIR__) . "/../config/constants.php";
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+// 1. Session state check
+if (!isset($_SESSION["cliente_id"])) {
+    header("Location: " . BASE_URL . "client/auth/login.php?redirect=carrito");
+    exit;
 }
 
-require_once dirname(__DIR__, 2) . '/config/constants.php';
-require_once dirname(__DIR__, 2) . '/config/database.php';
-require_once dirname(__DIR__) . '/includes/require_cliente_auth.php';
-
-$espacio_id = isset($_GET['espacio_id']) ? (int) $_GET['espacio_id'] : 0;
-$espacio = null;
-
-if ($espacio_id > 0) {
-    try {
-        $pdo = conectarDB();
-        $stmt = $pdo->prepare(
-            'SELECT id, nombre, precio_noche, foto_principal FROM espacios WHERE id = ? AND activo = 1 LIMIT 1'
-        );
-        $stmt->execute([$espacio_id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (is_array($row)) {
-            $espacio = $row;
-        }
-    } catch (Throwable $e) {
-        error_log('carrito index: ' . $e->getMessage());
-    }
+// 2. Cart logic
+if (!isset($_SESSION["carrito"]) || empty($_SESSION["carrito"])) {
+    header("Location: " . BASE_URL . "client/espacios/index.php");
+    exit;
 }
 
-$page_title = 'Reservar · Hotel Salitre';
-$extra_stylesheets = ['assets/css/client/carrito.css'];
+$pdo = conectarDB();
+$stmt = $pdo->prepare("SELECT * FROM espacios WHERE id = ? AND activo = 1");
+$stmt->execute([$_SESSION["carrito"]["espacio_id"]]);
+$espacio = $stmt->fetch();
 
-require dirname(__DIR__) . '/includes/header.php';
+if (!$espacio) {
+    unset($_SESSION["carrito"]);
+    header("Location: " . BASE_URL . "client/espacios/index.php");
+    exit;
+}
 
+$page_title = "Mi Reserva — Hotel Salitre";
+$extra_stylesheets = ["assets/css/client/carrito.css"];
+$extra_scripts = ["assets/js/client/carrito.js"]; // Para validar boton confirm
+
+require_once dirname(__DIR__) . "/includes/header.php";
+require_once dirname(__DIR__) . "/includes/nav.php";
 $base = BASE_URL;
-$confirm_url = $base . 'client/carrito/confirmacion.php';
-$catalogo = $base . 'client/espacios/';
+$cart = $_SESSION["carrito"];
 
-$foto_url = '';
-if ($espacio !== null && !empty($espacio['foto_principal'])) {
-    $fp = (string) $espacio['foto_principal'];
-    if (preg_match('#^https?://#i', $fp)) {
-        $foto_url = $fp;
-    } else {
-        $foto_url = $base . ltrim($fp, '/');
-    }
-}
-
-$precio_js = $espacio !== null ? (float) ($espacio['precio_noche'] ?? 0) : 0.0;
-$precio_attr = htmlspecialchars((string) $precio_js, ENT_QUOTES, 'UTF-8');
-
-$error_get = isset($_GET['error']) ? (string) $_GET['error'] : '';
-$checkout_error = '';
-if ($error_get === 'fechas') {
-    $checkout_error = 'Las fechas no son válidas: la salida debe ser posterior a la entrada.';
-} elseif ($error_get === 'noches') {
-    $checkout_error = 'El número de noches supera el máximo permitido.';
-}
+$amenidades = json_decode((string)$espacio['amenidades'], true) ?? [];
 ?>
-  <main id="contenido-principal" class="checkout-page">
-<?php if ($espacio === null) : ?>
-    <h1 class="checkout-page__title">Carrito</h1>
-    <p class="checkout-empty">Selecciona un espacio desde el <a href="<?php echo htmlspecialchars($catalogo, ENT_QUOTES, 'UTF-8'); ?>">catálogo</a> o abre el enlace “Reservar” desde el detalle de un espacio.</p>
-<?php else : ?>
-    <h1 class="checkout-page__title">Checkout</h1>
-    <p class="checkout-page__lead">Confirma las fechas de tu estancia en <?php echo htmlspecialchars((string) $espacio['nombre'], ENT_QUOTES, 'UTF-8'); ?>.</p>
-<?php if ($checkout_error !== '') : ?>
-    <p class="checkout-alert" role="alert"><?php echo htmlspecialchars($checkout_error, ENT_QUOTES, 'UTF-8'); ?></p>
-<?php endif; ?>
 
-    <div class="checkout-espacio">
-      <div class="checkout-espacio__media">
-<?php if ($foto_url !== '') : ?>
-        <img src="<?php echo htmlspecialchars($foto_url, ENT_QUOTES, 'UTF-8'); ?>" alt="">
-<?php endif; ?>
-      </div>
-      <div class="checkout-espacio__body">
-        <h2 class="checkout-espacio__name"><?php echo htmlspecialchars((string) $espacio['nombre'], ENT_QUOTES, 'UTF-8'); ?></h2>
-        <p class="checkout-espacio__price">Precio por noche: <strong><?php echo htmlspecialchars(number_format((float) $espacio['precio_noche'], 2, ',', '.'), ENT_QUOTES, 'UTF-8'); ?> <?php echo htmlspecialchars(MONEDA, ENT_QUOTES, 'UTF-8'); ?></strong></p>
-      </div>
+<div class="page-offset"></div>
+
+<section class="carrito section-pad">
+    <div class="container container--wide">
+        
+        <div class="carrito-header text-center mb-8 fade-in">
+            <h1 class="section-title">Confirma tu reserva</h1>
+            <p class="text-muted">Asegura tu lugar en la costa y mejora tu productividad.</p>
+        </div>
+
+        <div class="carrito-layout grid">
+            
+            <!-- Col Izquierda (65%) -->
+            <div class="carrito-info fade-in" data-delay="100">
+                <div class="carrito-info__card space-card">
+                    <div class="carrito-info__media">
+                        <?php if (!empty($espacio['foto_principal'])) : ?>
+                            <picture>
+                                <img src="<?= htmlspecialchars($base . $espacio['foto_principal'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?>" loading="lazy">
+                            </picture>
+                        <?php else : ?>
+                            <div class="img-placeholder" style="aspect-ratio:3/2;">
+                                <span><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></span>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="carrito-info__details">
+                        <span class="badge badge--accent mb-2"><?= htmlspecialchars((string)$espacio['tipo'], ENT_QUOTES, 'UTF-8') ?></span>
+                        <h2 class="text-xl fw-600 mb-2"><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></h2>
+                        <ul class="meta-list mb-4 text-sm text-muted">
+                            <li>Check-in: <strong><?= date('d M, y', strtotime($cart['fecha_entrada'])) ?></strong> a las 15:00 hrs.</li>
+                            <li>Check-out: <strong><?= date('d M, y', strtotime($cart['fecha_salida'])) ?></strong> a las 11:00 hrs.</li>
+                            <li>Noches totales: <strong><?= $cart['noches'] ?></strong></li>
+                        </ul>
+                        
+                        <div class="divider"></div>
+                        
+                        <h3 class="mb-2 fw-600 text-sm">El espacio incluye:</h3>
+                        <div class="carrito-amenities text-sm">
+                            <?php if (!empty($amenidades)) : ?>
+                                <ul style="display:flex; flex-wrap:wrap; gap:12px; color:var(--color-text-muted);">
+                                    <?php foreach (array_slice($amenidades, 0, 4) as $am) : ?>
+                                        <li style="display:inline-flex; align-items:center; gap:6px;">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <?= htmlspecialchars((string)$am, ENT_QUOTES, 'UTF-8') ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Col Derecha (35%) Sticky -->
+            <div class="carrito-summary fade-in" data-delay="200">
+                <div class="summary-card">
+                    <h2 class="summary-card__title">Desglose de Costos</h2>
+                    
+                    <ul class="summary-list">
+                        <li class="flex-between">
+                            <span>$<?= number_format((float)$espacio['precio_noche'], 0) ?> x <?= $cart['noches'] ?> noches</span>
+                            <span>$<?= number_format((float)$cart['subtotal'], 2) ?></span>
+                        </li>
+                        <li class="flex-between text-muted">
+                            <span>Fee de limpieza e integración</span>
+                            <span>$<?= number_format((float)$cart['limpieza'], 2) ?></span>
+                        </li>
+                        <li class="flex-between text-muted pb-3" style="border-bottom:1px solid var(--color-border);">
+                            <span>Impuestos (IVA <?= IVA * 100 ?>%)</span>
+                            <span>$<?= number_format((float)$cart['iva'], 2) ?></span>
+                        </li>
+                        <li class="flex-between summary-total pt-3">
+                            <span class="text-lg fw-600">Total</span>
+                            <span class="text-xl fw-700 text-accent">$<?= number_format((float)$cart['total'], 2) ?></span>
+                        </li>
+                    </ul>
+
+                    <form id="form-carrito-checkout" action="<?= $base ?>client/carrito/procesar_reserva.php" method="POST">
+                        <input type="hidden" name="cart_intent" value="1">
+                        <!-- Redirige directo a procesar_reserva -->
+                        <button type="submit" class="btn btn-primary btn-lg w-full mt-6" id="btn-request">Solicitar Reserva</button>
+                    </form>
+
+                    <div class="summary-policies mt-8 alert" style="flex-direction:column; background:var(--color-bg); border-left:3px solid var(--color-accent);">
+                        <h4 class="fw-600 mb-1 text-sm text-accent">Políticas de Cancelación</h4>
+                        <p class="text-xs text-muted">Reembolso del 100% si cancelas al menos 72 horas antes del check-in. De lo contrario se cobrará la primera noche.</p>
+                    </div>
+
+                    <div class="summary-trust mt-6 flex-center gap-4 text-muted">
+                        <div class="trust-icons flex gap-2">
+                            <!-- Los placeholder apegados a reglas (SVG css inline fallback o clase) -->
+                            <div class="img-placeholder" style="width:36px; height:24px; font-size:9px; font-weight:bold; aspect-ratio:3/2; display:flex; justify-content:center; align-items:center;">VISA</div>
+                            <div class="img-placeholder" style="width:36px; height:24px; font-size:9px; font-weight:bold; aspect-ratio:3/2; display:flex; justify-content:center; align-items:center;">MC</div>
+                            <div class="img-placeholder" style="width:36px; height:24px; font-size:9px; font-weight:bold; aspect-ratio:3/2; display:flex; justify-content:center; align-items:center;">AMEX</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
+</section>
 
-    <div
-      id="checkout-root"
-      class="checkout-form-wrap"
-      data-precio-noche="<?php echo $precio_attr; ?>"
-      data-moneda="<?php echo htmlspecialchars(MONEDA, ENT_QUOTES, 'UTF-8'); ?>"
-    >
-      <form class="checkout-form" method="post" action="<?php echo htmlspecialchars($confirm_url, ENT_QUOTES, 'UTF-8'); ?>">
-        <input type="hidden" name="espacio_id" value="<?php echo (int) $espacio['id']; ?>">
-        <div class="checkout-form__row">
-          <label class="checkout-form__label" for="fecha_entrada">Fecha de entrada</label>
-          <input class="checkout-form__input" type="date" id="fecha_entrada" name="fecha_entrada" required>
-        </div>
-        <div class="checkout-form__row">
-          <label class="checkout-form__label" for="fecha_salida">Fecha de salida</label>
-          <input class="checkout-form__input" type="date" id="fecha_salida" name="fecha_salida" required>
-        </div>
-        <div class="checkout-total">
-          <p class="checkout-total__label">Total estimado</p>
-          <p class="checkout-total__value" id="total-estimado">—</p>
-          <p class="checkout-total__hint">El importe final se confirma al procesar la reserva (noches × precio por noche).</p>
-        </div>
-        <button class="checkout-form__submit" type="submit">Confirmar reserva</button>
-      </form>
-    </div>
-
-    <script>
-(function () {
-  var root = document.getElementById('checkout-root');
-  if (!root) return;
-  var precio = parseFloat(root.getAttribute('data-precio-noche') || '0', 10);
-  var moneda = root.getAttribute('data-moneda') || '';
-  var inE = document.getElementById('fecha_entrada');
-  var inS = document.getElementById('fecha_salida');
-  var out = document.getElementById('total-estimado');
-  function fmt(n) {
-    return n.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  }
-  function calc() {
-    if (!inE || !inS || !out) return;
-    var v1 = inE.value;
-    var v2 = inS.value;
-    if (!v1 || !v2) {
-      out.textContent = '—';
-      return;
-    }
-    var d1 = new Date(v1 + 'T12:00:00');
-    var d2 = new Date(v2 + 'T12:00:00');
-    var ms = d2.getTime() - d1.getTime();
-    var nights = Math.floor(ms / 86400000);
-    if (!isFinite(nights) || nights < 1) {
-      out.textContent = '—';
-      return;
-    }
-    var total = nights * precio;
-    out.textContent = fmt(total) + ' ' + moneda;
-  }
-  inE.addEventListener('change', calc);
-  inS.addEventListener('change', calc);
-  inE.addEventListener('input', calc);
-  inS.addEventListener('input', calc);
-})();
-    </script>
-<?php endif; ?>
-  </main>
-<?php
-require dirname(__DIR__) . '/includes/footer.php';
+<?php require dirname(__DIR__) . "/includes/footer.php"; ?>
