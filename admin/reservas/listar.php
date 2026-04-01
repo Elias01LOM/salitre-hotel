@@ -16,6 +16,7 @@ try {
            e.nombre  AS espacio,
            r.fecha_entrada,
            r.fecha_salida,
+           r.noches,
            r.precio_total,
            r.estado
          FROM reservas r
@@ -48,6 +49,12 @@ require_once '../includes/sidebar.php';
       <p class="page-header__title">Listado de Reservas</p>
     </div>
 
+    <?php if (isset($_GET['success']) && $_GET['success'] === 'updated') : ?>
+        <div class="alert alert--success mb-4" style="background:var(--color-bg); padding:1rem; border-left:4px solid var(--color-success);">
+            <p>Estado de la reserva actualizado exitosamente.</p>
+        </div>
+    <?php endif; ?>
+
     <div class="data-table-wrap">
       <table class="data-table">
         <thead>
@@ -57,6 +64,7 @@ require_once '../includes/sidebar.php';
             <th>Espacio</th>
             <th>Entrada</th>
             <th>Salida</th>
+            <th>Noches</th>
             <th>Total</th>
             <th>Estado</th>
             <th>Acciones</th>
@@ -65,7 +73,7 @@ require_once '../includes/sidebar.php';
         <tbody>
 <?php if (empty($reservas)) : ?>
           <tr>
-            <td colspan="8" class="table-empty">No hay reservas registradas aún.</td>
+            <td colspan="9" class="table-empty">No hay reservas registradas aún.</td>
           </tr>
 <?php else : ?>
 <?php foreach ($reservas as $r) :
@@ -79,9 +87,20 @@ require_once '../includes/sidebar.php';
             <td><?php echo htmlspecialchars((string) $r['espacio'], ENT_QUOTES, 'UTF-8'); ?></td>
             <td><?php echo htmlspecialchars((string) $r['fecha_entrada'], ENT_QUOTES, 'UTF-8'); ?></td>
             <td><?php echo htmlspecialchars((string) $r['fecha_salida'], ENT_QUOTES, 'UTF-8'); ?></td>
+            <td><?php echo (int) $r['noches']; ?></td>
             <td>$<?php echo number_format((float) $r['precio_total'], 2); ?></td>
             <td>
-              <span class="badge badge-<?php echo $estado; ?>">
+              <?php 
+                $badge_bg = '';
+                $badge_color = '#fff';
+                switch($estado) {
+                    case 'pendiente': $badge_bg = '#f59e0b'; break;
+                    case 'confirmada': $badge_bg = '#22c55e'; break;
+                    case 'cancelada': $badge_bg = '#ef4444'; break;
+                    case 'completada': $badge_bg = '#6b7280'; break;
+                }
+              ?>
+              <span class="badge" style="background-color: <?php echo $badge_bg; ?>; color: <?php echo $badge_color; ?>; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">
                 <?php echo ucfirst($estado); ?>
               </span>
             </td>

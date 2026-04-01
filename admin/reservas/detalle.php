@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $st = $pdo->prepare('UPDATE reservas SET estado = :estado WHERE id = :id');
             $st->execute([':estado' => $nuevo_estado, ':id' => $id]);
-            header('Location: ' . BASE_URL . 'admin/reservas/detalle.php?id=' . $id . '&msg=actualizado');
+            header('Location: ' . BASE_URL . 'admin/reservas/listar.php?success=updated');
             exit();
         } catch (Throwable $e) {
             error_log('Admin reservas/detalle UPDATE: ' . $e->getMessage());
@@ -171,7 +171,16 @@ require_once '../includes/sidebar.php';
         <p class="detail-panel__title">Gestión de Estado</p>
         <p style="margin-bottom:.875rem;font-size:.875rem;color:#6b7280;">
           Estado actual:
-          <span class="badge badge-<?php echo $estado_actual; ?>" style="margin-left:.25rem;">
+          <?php 
+            $badge_bg = '';
+            switch($estado_actual) {
+                case 'pendiente': $badge_bg = '#f59e0b'; break;
+                case 'confirmada': $badge_bg = '#22c55e'; break;
+                case 'cancelada': $badge_bg = '#ef4444'; break;
+                case 'completada': $badge_bg = '#6b7280'; break;
+            }
+          ?>
+          <span class="badge" style="background-color: <?php echo $badge_bg; ?>; color: #fff; padding: 0.25rem 0.5rem; border-radius: 9999px; margin-left: 0.25rem; font-size: 0.75rem; font-weight: 600;">
             <?php echo ucfirst($estado_actual); ?>
           </span>
         </p>
