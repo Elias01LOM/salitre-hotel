@@ -1,82 +1,48 @@
-/* Definimos los estilos para la página de 'proyecto' */
+/* ==================================================
+   SALITRE — proyecto.css
+   Estilos específicos del módulo "El Proyecto"
+   ================================================== */
 
-.proyecto-page {
-  padding-bottom: var(--space-20);
+.proyecto-intro {
+    padding-top: calc(72px + var(--space-12)); /* Compensa fijo nav */
+    padding-bottom: var(--space-8);
 }
-.proyecto-hero {
-  padding: var(--space-16) var(--container-pad) var(--space-12);
-  border-bottom: 1px solid var(--color-border);
-  background: linear-gradient(
-    180deg,
-    var(--color-bg-deep) 0%,
-    var(--color-bg) 100%
-  );
+
+.proyecto-intro .img-placeholder {
+    transition: var(--transition);
 }
-.proyecto-hero__inner {
-  max-width: 40rem;
-  margin-inline: auto;
-  text-align: center;
+
+.proyecto-intro .img-placeholder:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
 }
-.proyecto-hero__title {
-  font-family: var(--font-display);
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-heading);
-  line-height: var(--line-tight);
-  margin-bottom: var(--space-5);
+
+.proyecto-pillars {
+    background: var(--color-surface);
 }
-.proyecto-hero__subtitle {
-  font-size: var(--font-size-md);
-  color: var(--color-text-muted);
-  line-height: var(--line-relaxed);
+
+.pillar-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    transition: var(--transition);
 }
-.proyecto-split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-10);
-  align-items: center;
-  max-width: var(--container-max);
-  margin-inline: auto;
-  padding: var(--space-12) var(--container-pad);
+
+.pillar-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-accent-light);
 }
-.proyecto-split--reverse {
-  direction: rtl;
+
+.pillar-icon svg {
+    width: 3rem;
+    height: 3rem;
 }
-.proyecto-split--reverse > * {
-  direction: ltr;
+
+.proyecto-ubicacion .map-wrapper {
+    transition: var(--transition);
 }
-@media (max-width: 52rem) {
-  .proyecto-split,
-  .proyecto-split--reverse {
-    grid-template-columns: 1fr;
-    direction: ltr;
-  }
-}
-.proyecto-split__heading {
-  font-family: var(--font-display);
-  font-size: var(--font-size-2xl);
-  color: var(--color-heading);
-  margin-bottom: var(--space-5);
-}
-.proyecto-split__p {
-  font-size: var(--font-size-md);
-  color: var(--color-text-muted);
-  line-height: var(--line-relaxed);
-  margin-bottom: var(--space-4);
-}
-.proyecto-split__p:last-child {
-  margin-bottom: 0;
-}
-.proyecto-split__placeholder {
-  min-height: 14rem;
-  border-radius: var(--radius-xl);
-  border: 1px dashed var(--color-border);
-  background: linear-gradient(
-    145deg,
-    var(--color-surface-elevated) 0%,
-    var(--color-primary) 100%
-  );
-}
-.proyecto-split__placeholder--alt {
-  opacity: 0.92;
+
+.proyecto-ubicacion .map-wrapper:hover {
+    transform: scale(1.005);
+    box-shadow: var(--shadow-lg);
 }

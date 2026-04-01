@@ -1,108 +1,73 @@
-/* Definimos la estructura y estilos de la agenda de eventos */
+/* ==================================================
+   SALITRE — agenda.css
+   Listado Front-end de Eventos y Experiencias
+   ================================================== */
 
-.agenda-page {
-  padding-block: var(--space-12);
-  padding-inline: var(--container-pad);
-  max-width: var(--container-max);
-  margin-inline: auto;
+.agenda-hero {
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding-top: calc(72px + var(--space-12)); /* Compensa fixed nav */
+    padding-bottom: var(--space-8);
+    margin-bottom: var(--space-12);
 }
-.agenda-page__header {
-  margin-bottom: var(--space-10);
+
+.agenda-content .container {
+    max-width: 800px;
 }
-.agenda-page__title {
-  font-family: var(--font-display);
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-heading);
-  margin-bottom: var(--space-3);
+
+.agenda-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    overflow: hidden;
 }
-.agenda-page__lead {
-  font-size: var(--font-size-md);
-  color: var(--color-text-muted);
-  max-width: 36rem;
+
+.agenda-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--color-accent-light);
 }
-.agenda-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-  gap: var(--space-8);
+
+.agenda-card__time {
+    padding: var(--space-6);
+    background: var(--color-bg);
+    border-right: 1px solid var(--color-border);
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
-.event-card {
-  display: flex;
-  flex-direction: column;
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  overflow: hidden;
-  transition: border-color var(--transition-base), transform var(--transition-fast);
+
+.agenda-card__day {
+    font-size: var(--text-4xl);
+    line-height: 1;
+    font-family: var(--font-display);
+    display: block;
 }
-.event-card:hover {
-  border-color: var(--color-accent-gold-soft);
-  transform: translateY(-2px);
+
+.agenda-card__body {
+    padding: var(--space-6);
+    flex: 1;
 }
-.event-card__date {
-  padding: var(--space-4) var(--space-6);
-  background: var(--color-bg-deep);
-  border-bottom: 1px solid var(--color-border);
-}
-.event-card__date-label {
-  display: block;
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-accent-gold);
-  margin-bottom: var(--space-1);
-}
-.event-card__date-value {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  color: var(--color-heading);
-}
-.event-card__body {
-  padding: var(--space-6);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-.event-card__title {
-  font-family: var(--font-display);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-heading);
-  line-height: var(--line-snug);
-}
-.event-card__desc {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-  line-height: var(--line-relaxed);
-  flex: 1;
-}
-.event-card__meta {
-  margin: 0;
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--color-border);
-  display: grid;
-  gap: var(--space-2);
-}
-.event-card__meta-row {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-4);
-  font-size: var(--font-size-sm);
-}
-.event-card__meta-row dt {
-  color: var(--color-text-muted);
-  font-weight: var(--font-weight-medium);
-}
-.event-card__meta-row dd {
-  margin: 0;
-  color: var(--color-heading);
-  text-align: right;
-}
-.agenda-page__empty {
-  text-align: center;
-  color: var(--color-text-muted);
-  padding-block: var(--space-12);
-  font-size: var(--font-size-md);
+
+@media (max-width: 600px) {
+    .agenda-card {
+        flex-direction: column;
+    }
+    .agenda-card__time {
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+        flex-direction: row;
+        align-items: baseline;
+        gap: var(--space-2);
+        padding: var(--space-4);
+    }
+    .agenda-card__day {
+        font-size: var(--text-2xl);
+    }
+    .agenda-card__body {
+        padding: var(--space-5);
+    }
 }
