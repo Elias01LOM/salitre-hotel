@@ -1,11 +1,15 @@
 <?php
 declare(strict_types=1);
-require_once dirname(dirname(__DIR__)) . '/config/constants.php';
-require_once dirname(dirname(__DIR__)) . '/config/database.php';
+// procesar_contacto.php — Formulario público de contacto
+// Ubicación correcta: client/ (raíz del cliente)
+// Movido desde client/includes/ — rutas actualizadas
+
+require_once dirname(__DIR__) . '/config/constants.php';
+require_once dirname(__DIR__) . '/config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = trim($_POST['nombre'] ?? '');
-    $email = trim($_POST['email'] ?? '');
+    $nombre  = trim($_POST['nombre']  ?? '');
+    $email   = trim($_POST['email']   ?? '');
     $mensaje = trim($_POST['mensaje'] ?? '');
 
     if (empty($nombre) || empty($email) || empty($mensaje)) {
@@ -13,8 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        header('Location: ' . BASE_URL . 'client/index.php?contacto=error#contacto');
+        exit;
+    }
+
     try {
-        $pdo = conectarDB();
+        $pdo  = conectarDB();
         $stmt = $pdo->prepare('INSERT INTO contacto (nombre, email, mensaje) VALUES (?, ?, ?)');
         $stmt->execute([$nombre, $email, $mensaje]);
         header('Location: ' . BASE_URL . 'client/index.php?contacto=ok#contacto');

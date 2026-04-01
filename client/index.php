@@ -186,13 +186,13 @@ $service_icons = [
         <h2 class="section-title">¿Tienes dudas?</h2>
 
 <?php if (isset($_GET['contacto']) && $_GET['contacto'] === 'ok') : ?>
-        <p class="contacto__text" role="status" style="color: #4CAF50; font-weight: bold;">Tu mensaje fue enviado. Te respondemos pronto.</p>
+        <p class="contacto__text alert--success" role="status">Tu mensaje fue enviado. Te respondemos pronto.</p>
 <?php elseif (isset($_GET['contacto']) && $_GET['contacto'] === 'error') : ?>
-        <p class="contacto__text" role="alert" style="color: #F44336; font-weight: bold;">No pudimos enviar tu mensaje. Inténtalo de nuevo.</p>
+        <p class="contacto__text alert--error" role="alert">No pudimos enviar tu mensaje. Inténtalo de nuevo.</p>
 <?php endif; ?>
 
         <form class="contact-form" method="post"
-              action="<?= htmlspecialchars($base . 'client/includes/procesar_contacto.php', ENT_QUOTES, 'UTF-8') ?>">
+              action="<?= htmlspecialchars($base . 'client/procesar_contacto.php', ENT_QUOTES, 'UTF-8') ?>">
           <div class="field">
             <label class="field__label" for="contacto-nombre">Nombre</label>
             <input class="field__input" type="text" id="contacto-nombre" name="nombre"

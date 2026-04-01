@@ -11,8 +11,8 @@ $base = BASE_URL;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($page_title ?? 'Hotel Salitre', ENT_QUOTES, 'UTF-8') ?></title>
     
-    <link rel="stylesheet" href="<?= $base ?>assets/css/shared/reset.css">
     <link rel="stylesheet" href="<?= $base ?>assets/css/shared/variables.css">
+    <link rel="stylesheet" href="<?= $base ?>assets/css/shared/reset.css">
     <link rel="stylesheet" href="<?= $base ?>assets/css/client/main.css">
     
     <?php if (isset($extra_stylesheets) && is_array($extra_stylesheets)): ?>
@@ -21,4 +21,4 @@ $base = BASE_URL;
         <?php endforeach; ?>
     <?php endif; ?>
 </head>
-<body class="f-dark">
+<body>
