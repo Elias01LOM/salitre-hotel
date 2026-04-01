@@ -102,9 +102,13 @@
   white-space: nowrap;
 }
 
-/* Hamburger — solo visible en mobile */
+/* 
+ * Hamburger — visible en todos los viewports para consistencia.
+ * Orden: links | Ingresar | Registrarme | Menu
+ * Referencia: Seccion 07.2 de documentacion
+ */
 .nav__hamburger {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
@@ -533,9 +537,6 @@ body.nav-open {
 
 @media (max-width: 768px) {
   /* Navbar mobile */
-  .nav__hamburger {
-    display: flex;
-  }
 
   .nav__list {
     position: fixed;
