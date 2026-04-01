@@ -117,9 +117,9 @@ $amenidades = json_decode((string)$espacio['amenidades'], true) ?? [];
                         </li>
                     </ul>
 
-                    <form id="form-carrito-checkout" action="<?= $base ?>client/carrito/confirmacion.php" method="POST">
+                    <form id="form-carrito-checkout" action="<?= $base ?>client/carrito/procesar_reserva.php" method="POST">
                         <input type="hidden" name="cart_intent" value="1">
-                        <!-- Redirige solo directo a reserva para Fase 7 -->
+                        <!-- Redirige directo a procesar_reserva -->
                         <button type="submit" class="btn btn-primary btn-lg w-full mt-6" id="btn-request">Solicitar Reserva</button>
                     </form>
 
