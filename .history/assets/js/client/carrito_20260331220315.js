@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (formCheckout && btnRequest) {
 
-        formCheckout.addEventListener("submit", function(e) {
+        formCheckout.addEventListener("submit", function (e) {
             e.preventDefault();
 
             // Simular loading state en el botón

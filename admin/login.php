@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once dirname(__DIR__) . '/config/constants.php';
 
 // Si ya hay sesión activa, ir al dashboard
-if (isset($_SESSION['admin_id'])) {
+if (isset($_SESSION['staff_id'])) {
     header('Location: ' . BASE_URL . 'admin/index.php');
     exit();
 }
@@ -33,9 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($staff && password_verify($pass, (string) $staff['password'])) {
                 session_regenerate_id(true);
-                $_SESSION['admin_id']     = (int) $staff['id'];
-                $_SESSION['admin_nombre'] = (string) $staff['nombre'];
-                $_SESSION['admin_rol']    = (string) $staff['rol'];
+                $_SESSION['staff_id']     = (int) $staff['id'];
+                $_SESSION['staff_nombre'] = (string) $staff['nombre'];
+                $_SESSION['staff_rol']    = (string) $staff['rol'];
                 header('Location: ' . BASE_URL . 'admin/index.php');
                 exit();
             } else {

@@ -9,11 +9,12 @@ require_once dirname(__DIR__, 2) . '/config/database.php';
 $mensajes = [];
 try {
     $pdo  = conectarDB();
-    $stmt = $pdo->query(
+    $stmt = $pdo->prepare(
         'SELECT id, nombre, email, mensaje, leido, creado_en
          FROM contacto
-         ORDER BY creado_en DESC'
+         ORDER BY leido ASC, creado_en DESC'
     );
+    $stmt->execute();
     $mensajes = $stmt->fetchAll();
 } catch (Throwable $e) {
     error_log('Admin contacto/listar: ' . $e->getMessage());
@@ -21,8 +22,8 @@ try {
 
 $no_leidos = count(array_filter($mensajes, fn($m) => !(bool) $m['leido']));
 
-$flash = (isset($_GET['msg']) && $_GET['msg'] === 'leido')
-    ? ['type' => 'success', 'text' => 'Mensaje marcado como leído.']
+$flash = (isset($_GET['success']) && $_GET['success'] === 'marked_read')
+    ? ['type' => 'success', 'text' => 'Mensaje marcado como leído']
     : null;
 
 // ---------- Layout ----------
@@ -103,17 +104,14 @@ require_once '../includes/sidebar.php';
             </td>
             <td>
               <?php if (!$leido) : ?>
-                <span class="badge badge-pendiente">Nuevo</span>
+                <span class="badge" style="background-color: var(--color-warning); color: #000; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Nuevo</span>
               <?php else : ?>
-                <span class="badge badge-completada">Leído</span>
+                <span class="badge" style="background-color: var(--color-mid); color: var(--color-text-muted); padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">Leído</span>
               <?php endif; ?>
             </td>
             <td>
               <?php if (!$leido) : ?>
-              <form method="post" action="<?php echo $proc_action; ?>">
-                <input type="hidden" name="id" value="<?php echo $id; ?>">
-                <button class="btn btn--edit" type="submit">Marcar leído</button>
-              </form>
+                <a class="btn btn--edit" href="<?php echo $proc_action; ?>?id=<?php echo $id; ?>">Marcar como leído</a>
               <?php endif; ?>
             </td>
           </tr>

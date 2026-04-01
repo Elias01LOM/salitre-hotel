@@ -1,5 +1,5 @@
 <?php
-// Sidebar: variables ya disponibles desde header.php ($base, $admin_nombre, $admin_rol)
+// Sidebar: variables ya disponibles desde header.php ($base, $staff_nombre, $staff_rol)
 $current = basename($_SERVER['PHP_SELF']);
 
 $nav_items = [
@@ -30,8 +30,8 @@ $nav_items = [
   </div>
 
   <div class="sidebar__user">
-    <span class="sidebar__user-role"><?php echo $admin_rol; ?></span>
-    <span class="sidebar__user-name"><?php echo $admin_nombre; ?></span>
+    <span class="sidebar__user-role"><?php echo $staff_rol; ?></span>
+    <span class="sidebar__user-name"><?php echo $staff_nombre; ?></span>
   </div>
 
   <nav class="sidebar__nav" aria-label="Navegación principal del admin">

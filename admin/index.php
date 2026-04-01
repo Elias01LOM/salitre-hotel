@@ -40,7 +40,7 @@ require_once 'includes/sidebar.php';
 <main class="main-content">
   <div class="topbar">
     <h1 class="topbar__title">Dashboard</h1>
-    <span class="topbar__meta">Bienvenido, <?php echo $admin_nombre; ?></span>
+    <span class="topbar__meta">Bienvenido, <?php echo $staff_nombre; ?></span>
   </div>
 
   <div class="content-area">
