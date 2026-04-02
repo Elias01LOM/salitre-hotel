@@ -5,7 +5,10 @@ $base = BASE_URL;
 <nav class="nav">
     <div class="nav-container">
         <a href="<?= $base ?>client/index.php" class="nav__logo">
-            Salitre
+            <img src="<?= $base ?>assets/img/logo/logo.svg" 
+                 alt="Hotel Salitre" class="nav__logo-img"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'">
+            <span class="nav__logo-fallback" style="display:none;">Salitre</span>
         </a>
         <ul class="nav__list" id="nav-menu">
             <li><a href="<?= $base ?>client/index.php#hero" class="nav__link">Inicio</a></li>

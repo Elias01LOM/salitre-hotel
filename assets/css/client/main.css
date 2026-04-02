@@ -63,6 +63,19 @@
   color: var(--color-accent);
 }
 
+.nav__logo-img {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+.nav__logo-fallback {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
 /* Lista de links */
 .nav__list {
   display: flex;
