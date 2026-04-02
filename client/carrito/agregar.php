@@ -4,7 +4,6 @@ require_once dirname(__DIR__) . "/../config/database.php";
 require_once dirname(__DIR__) . "/../config/constants.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    var_dump($_POST);
     header("Location: " . BASE_URL . "client/espacios/index.php");
     exit;
 }

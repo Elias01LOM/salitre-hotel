@@ -44,15 +44,22 @@ setlocale(LC_TIME, 'es_ES.UTF-8', 'es_MX.UTF-8', 'spanish'); // Intento formatea
             </div>
         <?php else: ?>
             <div class="agenda-list grid gap-6">
-                <?php foreach ($eventos as $idx => $ev): 
+                <?php 
+                /* 
+                 * Arrays de meses y días en español para formateo de fechas.
+                 * Se definen fuera del loop para evitar Undefined variable.
+                 * Referencia: Documentación Sección 05.5
+                 */
+                $meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                $dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+
+                foreach ($eventos as $idx => $ev): 
                     // Formato de fecha
                     $dateObj = new DateTime($ev["fecha_evento"]);
                     $fecha_legible = strftime("%A %d de %B", $dateObj->getTimestamp());
                     if (strpos($fecha_legible, '%') !== false || !$fecha_legible) {
-                        // Fallback si strftime falla
-                        $meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+                        // Fallback si strftime falla (Windows o locale no disponible)
                         $res = $dateObj->format('N');
-                        $dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
                         $fecha_legible = $dias[$res-1] . " " . $dateObj->format('d') . " de " . $meses[$dateObj->format('n')-1];
                     }
 

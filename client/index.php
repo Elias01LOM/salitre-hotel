@@ -216,7 +216,7 @@ $service_icons = [
           <div class="field">
             <label class="field__label" for="contacto-mensaje">Mensaje</label>
             <textarea class="field__textarea" id="contacto-mensaje" name="mensaje"
-                      required rows="5"></textarea>
+                      maxlength="500" required></textarea>
           </div>
           <button class="contact-form__button" type="submit">Enviar</button>
         </form>

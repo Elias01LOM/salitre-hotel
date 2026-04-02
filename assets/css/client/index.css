@@ -725,6 +725,18 @@
   }
 }
 
+/* 
+ * Se deshabilita el resize manual del textarea
+ * para mantener la consistencia visual del formulario.
+ * Referencia: Sección 06.1 (Home — client/index.php)
+ */
+#contacto textarea {
+    resize: none; /* Bloquea redimensionamiento manual */
+    min-height: 150px;
+    max-height: 300px;
+    overflow-y: auto; /* Scroll interno si excede contenido */
+}
+
 /* ====================================================
    H. ANIMACIONES — Soporte .fade-in (legacy index.php)
    Las secciones usan class="fade-in" y se activan
