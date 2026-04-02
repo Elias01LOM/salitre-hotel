@@ -129,11 +129,13 @@ $amenidades = json_decode((string)$espacio['amenidades'], true) ?? [];
                     </div>
 
                     <div class="summary-trust mt-6 flex-center gap-4 text-muted">
-                        <div class="trust-icons flex gap-2">
-                            <!-- Los placeholder apegados a reglas (SVG css inline fallback o clase) -->
-                            <div class="img-placeholder" style="width:36px; height:24px; font-size:9px; font-weight:bold; aspect-ratio:3/2; display:flex; justify-content:center; align-items:center;">VISA</div>
-                            <div class="img-placeholder" style="width:36px; height:24px; font-size:9px; font-weight:bold; aspect-ratio:3/2; display:flex; justify-content:center; align-items:center;">MC</div>
-                            <div class="img-placeholder" style="width:36px; height:24px; font-size:9px; font-weight:bold; aspect-ratio:3/2; display:flex; justify-content:center; align-items:center;">AMEX</div>
+                        <p class="text-xs" style="margin-bottom: var(--space-2);">Formas de pago aceptadas</p>
+                        <div class="trust-icons flex gap-2" style="flex-wrap:wrap;">
+                            <img src="<?= $base ?>assets/img/payments/visa.svg" alt="Visa" width="42" height="28" loading="eager">
+                            <img src="<?= $base ?>assets/img/payments/mastercard.svg" alt="Mastercard" width="42" height="28" loading="eager">
+                            <img src="<?= $base ?>assets/img/payments/amex.svg" alt="AMEX" width="42" height="28" loading="eager">
+                            <img src="<?= $base ?>assets/img/payments/paypal.svg" alt="PayPal" width="42" height="28" loading="eager">
+                            <img src="<?= $base ?>assets/img/payments/oxxo.svg" alt="OXXO" width="42" height="28" loading="eager">
                         </div>
                     </div>
                 </div>

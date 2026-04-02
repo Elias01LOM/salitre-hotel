@@ -1,15 +1,18 @@
 <?php
 declare(strict_types=1);
-// procesar_contacto.php — Formulario público de contacto
-// Ubicación correcta: client/ (raíz del cliente)
-// Movido desde client/includes/ — rutas actualizadas
+// procesar_contacto.php — Formulario publico de contacto
+// Ubicacion: client/includes/ (segun documentacion seccion 02.1)
 
-require_once dirname(__DIR__) . '/config/constants.php';
-require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(dirname(__DIR__)) . '/config/constants.php';
+require_once dirname(dirname(__DIR__)) . '/config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre  = trim($_POST['nombre']  ?? '');
-    $email   = trim($_POST['email']   ?? '');
+    /* 
+     * Se sanitizan los inputs para prevenir XSS e inyecciones.
+     * Referencia: Sección 08.1 — Validación y Sanitización de Inputs
+     */
+    $nombre = trim($_POST['nombre']  ?? '');
+    $email  = filter_var(trim($_POST['email']   ?? ''), FILTER_SANITIZE_EMAIL);
     $mensaje = trim($_POST['mensaje'] ?? '');
 
     if (empty($nombre) || empty($email) || empty($mensaje)) {
@@ -21,6 +24,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: ' . BASE_URL . 'client/index.php?contacto=error#contacto');
         exit;
     }
+
+    // Validar longitud máxima
+    if (strlen($mensaje) > 500) {
+        header('Location: ' . BASE_URL . 'client/index.php?contacto=error#contacto');
+        exit;
+    }
+
+    // htmlspecialchars() al guardar para prevenir XSS cuando el staff lo lea
+    $nombre = htmlspecialchars($nombre, ENT_QUOTES, "UTF-8");
+    $mensaje = htmlspecialchars($mensaje, ENT_QUOTES, "UTF-8");
 
     try {
         $pdo  = conectarDB();

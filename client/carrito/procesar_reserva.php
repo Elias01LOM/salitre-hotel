@@ -48,11 +48,12 @@ try {
     // 6. Obtener folio de reserva
     $reserva_id = $pdo->lastInsertId();
 
-    // 7. Limpiar carrito
+    // 7. Limpiar carrito y establecer ID de confirmación en sesión
     unset($_SESSION["carrito"]);
+    $_SESSION["reserva_confirmacion_id"] = $reserva_id;
 
-    // 8. Redirect a confirmación con folio
-    header("Location: " . BASE_URL . "client/carrito/confirmacion.php?id=" . $reserva_id);
+    // 8. Redirect a confirmación
+    header("Location: " . BASE_URL . "client/carrito/confirmacion.php");
     exit;
 
 } catch (PDOException $e) {

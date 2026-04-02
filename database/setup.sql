@@ -101,3 +101,16 @@ INSERT INTO eventos (titulo, descripcion, fecha_evento, hora_inicio, hora_fin, c
 ('Yoga frente al mar', 'Sesión grupal en terraza. Sin costo para huéspedes.', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '06:30:00', '07:30:00', 20, 1),
 ('Clases de surf', 'Con instructor. Incluidas en estancias de 3+ noches.', DATE_ADD(CURDATE(), INTERVAL 5 DAY), '07:00:00', '09:00:00', 8, 1),
 ('Noche de networking', 'Conecta con otros nómadas del hotel.', DATE_ADD(CURDATE(), INTERVAL 10 DAY), '19:00:00', '21:00:00', 30, 1);
+
+-- FOTOS DE ESPACIOS (Tarea 6)
+UPDATE espacios SET foto_principal = 'assets/img/client/espacios/estudio-marea.webp' WHERE slug = 'estudio-marea';
+UPDATE espacios SET foto_principal = 'assets/img/client/espacios/loft-creativo.webp' WHERE slug = 'loft-creativo';
+UPDATE espacios SET foto_principal = 'assets/img/client/espacios/suite-salitre.webp' WHERE slug = 'suite-salitre';
+UPDATE espacios SET foto_principal = 'assets/img/client/espacios/villa-conexion.webp' WHERE slug = 'villa-conexion';
+
+-- CLIENTE DE PRUEBA (password: cliente123)
+INSERT INTO clientes (nombre, email, password, telefono) VALUES
+('Cliente Prueba', 'cliente@prueba.mx',
+ '$2y$10$YJ0fE1w2OASK0jXnJzFCYeWbYXbRx2Z4qR2kX0fvj5xN6MqT7bKGW',
+ '5512345678');
+

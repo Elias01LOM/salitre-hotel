@@ -13,6 +13,11 @@
    .nav__link / .nav__actions / .nav__hamburger
 ==================================================== */
 
+/* 
+ * Navbar fijo con fondo semi-transparente para legibilidad
+ * sobre cualquier fondo (video hero, imágenes, colores oscuros).
+ * Referencia: Documentación Sección 07.2 (Navbar Sticky + Hamburger)
+ */
 .nav {
   position: fixed;
   top: 0;
@@ -20,12 +25,16 @@
   width: 100%;
   z-index: 1000;
   padding: var(--space-4) 0;
+  background-color: rgba(248, 248, 245, 0.92); /* var(--color-bg) con 92% opacity */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-sm);
   transition: var(--transition-slow);
 }
 
 /* Estado tras el scroll (main.js añade esta clase) */
 .nav.scrolled {
-  background-color: var(--color-surface);
+  background-color: rgba(248, 248, 245, 0.98);
   box-shadow: var(--shadow-md);
   padding: var(--space-3) 0;
 }
@@ -52,6 +61,19 @@
 
 .nav__logo:hover {
   color: var(--color-accent);
+}
+
+.nav__logo-img {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+.nav__logo-fallback {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
 }
 
 /* Lista de links */
@@ -102,9 +124,13 @@
   white-space: nowrap;
 }
 
-/* Hamburger — solo visible en mobile */
+/* 
+ * Hamburger — visible en todos los viewports para consistencia.
+ * Orden: links | Ingresar | Registrarme | Menu
+ * Referencia: Seccion 07.2 de documentacion
+ */
 .nav__hamburger {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
@@ -533,9 +559,6 @@ body.nav-open {
 
 @media (max-width: 768px) {
   /* Navbar mobile */
-  .nav__hamburger {
-    display: flex;
-  }
 
   .nav__list {
     position: fixed;

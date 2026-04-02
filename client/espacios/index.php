@@ -51,6 +51,14 @@ $base = BASE_URL;
                 ?>
                     <article class="space-card catalog-card fade-in" data-tipo="<?= $tipo ?>" data-delay="<?= ($index % 3) * 100 ?>">
                         <div class="space-card__media">
+                            <!-- 
+                              RECURSO: Imagen de <?= htmlspecialchars((string)$espacio["nombre"], ENT_QUOTES, 'UTF-8') ?>
+                              FORMATO: WebP con fallback JPG
+                              DIMENSIONES: 1200x800px
+                              UBICACIÓN: assets/img/client/espacios/<?= htmlspecialchars((string)$espacio["slug"], ENT_QUOTES, 'UTF-8') ?>.webp
+                              NOTA: El usuario proporcionará este recurso (Tarea 6)
+                              TEMPORAL: Se muestra placeholder mientras no exista
+                            -->
                             <?php if (!empty($espacio['foto_principal'])) : ?>
                                 <picture>
                                     <source srcset="<?= htmlspecialchars($base . $espacio['foto_principal'], ENT_QUOTES, 'UTF-8') ?>" type="image/webp">

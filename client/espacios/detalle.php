@@ -44,6 +44,14 @@ foreach ($fotos_galeria as $f) {
         <!-- Galería (60%) -->
         <div class="detalle-galeria fade-in" data-delay="0">
             <div class="detalle-galeria__main">
+                <!-- 
+                  RECURSO: Imagen de <?= htmlspecialchars((string)$espacio["nombre"], ENT_QUOTES, 'UTF-8') ?>
+                  FORMATO: WebP con fallback JPG
+                  DIMENSIONES: 1200x800px
+                  UBICACIÓN: assets/img/client/espacios/<?= htmlspecialchars((string)$espacio["slug"], ENT_QUOTES, 'UTF-8') ?>.webp
+                  NOTA: El usuario proporcionará este recurso (Tarea 6)
+                  TEMPORAL: Se muestra placeholder mientras no exista
+                -->
                 <?php if (!empty($todas_fotos)) : ?>
                     <picture>
                         <source srcset="<?= htmlspecialchars($base . $todas_fotos[0], ENT_QUOTES, 'UTF-8') ?>" type="image/webp">
@@ -98,43 +106,45 @@ foreach ($fotos_galeria as $f) {
                 <p class="text-muted">No indicadas.</p>
             <?php endif; ?>
 
-            <!-- Panel Flotante / Sticky para Formulario de Reserva -->
-            <div class="detalle-booking-panel">
-                <div class="detalle-booking-panel__header flex-between mb-4">
-                    <div class="detalle-booking-price">
-                        <strong>$<?= number_format((float)$espacio['precio_noche'], 0) ?></strong> <small>/noche</small>
+        </div>
+
+        <!-- 
+          Panel de Reserva — Fuera del wrapper .fade-in para ser siempre visible.
+          El botón inicia disabled y se habilita vía JS (espacios.js) al seleccionar fechas.
+          Referencia: Documentación Sección 05.2 (Flujo Principal)
+        -->
+        <div class="detalle-booking-panel">
+            <div class="detalle-booking-panel__header flex-between mb-4">
+                <div class="detalle-booking-price">
+                    <strong>$<?= number_format((float)$espacio['precio_noche'], 0) ?></strong> <small>/noche</small>
+                </div>
+            </div>
+
+            <form id="booking-form" action="<?= $base ?>client/carrito/agregar.php" method="POST">
+                <input type="hidden" name="espacio_id" value="<?= (int)$espacio['id'] ?>">
+                
+                <div class="booking-dates">
+                    <div class="field">
+                        <label for="fecha_entrada" class="field__label">Check-in</label>
+                        <input type="date" id="fecha_entrada" name="fecha_entrada" class="field__input required" min="<?= date('Y-m-d') ?>" required>
+                    </div>
+                    <div class="field">
+                        <label for="fecha_salida" class="field__label">Check-out</label>
+                        <input type="date" id="fecha_salida" name="fecha_salida" class="field__input required" disabled required>
+                    </div>
+                </div>
+                
+                <div id="booking-total-preview" class="booking-preview mt-4" style="display:none;">
+                    <div class="flex-between">
+                        <span><span id="booking-nights">0</span> noches</span>
+                        <strong>$ <span id="booking-subtotal">0</span></strong>
                     </div>
                 </div>
 
-                <form id="booking-form" action="<?= $base ?>client/carrito/agregar.php" method="POST">
-                    <input type="hidden" name="espacio_id" value="<?= (int)$espacio['id'] ?>">
-                    
-                    <div class="booking-dates">
-                        <div class="field">
-                            <label for="fecha_entrada" class="field__label">Check-in</label>
-                            <input type="date" id="fecha_entrada" name="fecha_entrada" class="field__input required" min="<?= date('Y-m-d') ?>" required>
-                        </div>
-                        <div class="field">
-                            <label for="fecha_salida" class="field__label">Check-out</label>
-                            <!-- Configurado en JS basándose en fecha_entrada -->
-                            <input type="date" id="fecha_salida" name="fecha_salida" class="field__input required" disabled required>
-                        </div>
-                    </div>
-                    
-                    <div id="booking-total-preview" class="booking-preview mt-4" style="display:none;">
-                        <div class="flex-between">
-                            <span><span id="booking-nights">0</span> noches</span>
-                            <strong>$ <span id="booking-subtotal">0</span></strong>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-lg w-full mt-6" id="btn-add-cart" disabled>
-                        Reservar Fechas
-                    </button>
-                    <!-- Pasamos los datos a JS mediante atributos data del form/body -->
-                </form>
-            </div>
-
+                <button type="submit" class="btn btn-primary btn-lg w-full mt-6" id="btn-add-cart" disabled>
+                    Reservar Fechas
+                </button>
+            </form>
         </div>
     </div>
 </section>
