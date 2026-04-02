@@ -15,25 +15,22 @@ document.addEventListener("DOMContentLoaded", function () {
     if (formCheckout && btnRequest) {
 
         formCheckout.addEventListener("submit", function(e) {
-            e.preventDefault();
+            /* 
+             * Confirmación UX antes de enviar la reserva.
+             * Si el usuario cancela, se previene el submit.
+             * Si acepta, el form se envía normalmente (sin preventDefault).
+             * Referencia: Documentación Sección 05.2
+             */
+            var conf = confirm("¿Confirmar y enviar reserva para las fechas seleccionadas?\n\nRecuerda que no hay cargos sorpresa.");
 
-            // Simular loading state en el botón
+            if (!conf) {
+                e.preventDefault();
+                return;
+            }
+
+            // El form se envía normalmente si el usuario confirma
             btnRequest.disabled = true;
             btnRequest.textContent = "Procesando...";
-
-            // Confirmación UX
-            // Nota para fase 7: si se procesa pago esto abriría el modal STRIPE/Paypal.
-            // Por ahora, mostrar un confirm y enviar POST
-            const conf = confirm("\u00BFCofirmar y enviar reserva para las fechas seleccionadas? \n\nRecuerda que no hay cargos sorpresa.");
-
-            if (conf) {
-                // Hacer submit real hacia carrito/confirmacion.php
-                formCheckout.submit();
-            } else {
-                // Revert
-                btnRequest.disabled = false;
-                btnRequest.textContent = "Solicitar Reserva";
-            }
         });
     }
 

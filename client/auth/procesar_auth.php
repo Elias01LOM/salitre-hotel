@@ -75,7 +75,50 @@ if ($action === "registro") {
     $_SESSION["cliente_nombre"] = $nombre;
     session_regenerate_id(true);
     
-    // Redirect a home o carrito si quedó pendiente (opcional, pero solo login envía ?redirect natural, revisamos sesión si la metimos)
+    /* Restaurar carrito pendiente si existe (mismo patrón que login) */
+    if (isset($_SESSION["carrito_pendiente"])) {
+        $pendiente = $_SESSION["carrito_pendiente"];
+        $esp_id = filter_var($pendiente["espacio_id"] ?? 0, FILTER_VALIDATE_INT);
+        $fe = $pendiente["fecha_entrada"] ?? "";
+        $fs = $pendiente["fecha_salida"] ?? "";
+        
+        if ($esp_id && $fe && $fs) {
+            $stmtE = $pdo->prepare("SELECT id, precio_noche FROM espacios WHERE id = ? AND activo = 1");
+            $stmtE->execute([$esp_id]);
+            $espCart = $stmtE->fetch(PDO::FETCH_ASSOC);
+            
+            if ($espCart) {
+                try {
+                    $entrada = new DateTime($fe);
+                    $salida = new DateTime($fs);
+                    $diff = $entrada->diff($salida);
+                    $noches = ($diff->invert || $diff->days < 1) ? 0 : $diff->days;
+                } catch (Exception $ex) {
+                    $noches = 0;
+                }
+                
+                if ($noches > 0) {
+                    $subtotal = $espCart["precio_noche"] * $noches;
+                    $iva = $subtotal * IVA;
+                    $total = $subtotal + LIMPIEZA_FEE + $iva;
+                    
+                    $_SESSION["carrito"] = [
+                        "espacio_id" => (int)$esp_id,
+                        "fecha_entrada" => $fe,
+                        "fecha_salida" => $fs,
+                        "noches" => $noches,
+                        "subtotal" => $subtotal,
+                        "iva" => $iva,
+                        "limpieza" => LIMPIEZA_FEE,
+                        "total" => $total
+                    ];
+                }
+            }
+        }
+        unset($_SESSION["carrito_pendiente"]);
+    }
+    
+    // Redirect a carrito si hay pendiente, o a home
     if (isset($_SESSION["redirect_after_login"]) && $_SESSION["redirect_after_login"] === "carrito") {
         unset($_SESSION["redirect_after_login"]);
         header("Location: " . BASE_URL . "client/carrito/index.php");
@@ -114,15 +157,56 @@ if ($action === "login") {
     $_SESSION["cliente_nombre"] = $usuario["nombre"];
     session_regenerate_id(true);
     
-    // Reconstruir carrito si quedó posteado temporalmente antes del login
+    /* 
+     * Restaurar carrito pendiente si existe.
+     * agregar.php guarda $_POST completo en carrito_pendiente
+     * cuando el usuario no tiene sesión. Aquí recalculamos
+     * precios desde BD para evitar manipulación del cliente.
+     * Referencia: Documentación Sección 05.2 y 08.4
+     */
     if (isset($_SESSION["carrito_pendiente"])) {
-        // Podríamos procesar dinámicamente el carrito, pero como el agregar.php original no esperaba esto directo 
-        // y solo usaba SESSION["carrito"], lo redirigimos directo al endpoint si es posible, o simplemente lo dejamos en carrito
-        // Nota: para no complicar el requerimiento 05.3, la lógica estricta pide redirigir:
-        unset($_SESSION["carrito_pendiente"]); // clear temporal
+        $pendiente = $_SESSION["carrito_pendiente"];
+        $esp_id = filter_var($pendiente["espacio_id"] ?? 0, FILTER_VALIDATE_INT);
+        $fe = $pendiente["fecha_entrada"] ?? "";
+        $fs = $pendiente["fecha_salida"] ?? "";
+        
+        if ($esp_id && $fe && $fs) {
+            $stmtE = $pdo->prepare("SELECT id, precio_noche, slug FROM espacios WHERE id = ? AND activo = 1");
+            $stmtE->execute([$esp_id]);
+            $espCart = $stmtE->fetch(PDO::FETCH_ASSOC);
+            
+            if ($espCart) {
+                try {
+                    $entrada = new DateTime($fe);
+                    $salida = new DateTime($fs);
+                    $diff = $entrada->diff($salida);
+                    $noches = ($diff->invert || $diff->days < 1) ? 0 : $diff->days;
+                } catch (Exception $ex) {
+                    $noches = 0;
+                }
+                
+                if ($noches > 0) {
+                    $subtotal = $espCart["precio_noche"] * $noches;
+                    $iva = $subtotal * IVA;
+                    $total = $subtotal + LIMPIEZA_FEE + $iva;
+                    
+                    $_SESSION["carrito"] = [
+                        "espacio_id" => (int)$esp_id,
+                        "fecha_entrada" => $fe,
+                        "fecha_salida" => $fs,
+                        "noches" => $noches,
+                        "subtotal" => $subtotal,
+                        "iva" => $iva,
+                        "limpieza" => LIMPIEZA_FEE,
+                        "total" => $total
+                    ];
+                }
+            }
+        }
+        unset($_SESSION["carrito_pendiente"]);
     }
-
-    // Redirect según ?redirect originado del input hidden
+    
+    /* Redirigir según parámetro redirect del formulario */
     $redirect = $_POST["redirect"] ?? "home";
     if ($redirect === "carrito") {
         header("Location: " . BASE_URL . "client/carrito/index.php");
