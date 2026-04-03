@@ -2,11 +2,20 @@
 /* 
  * client/carrito/confirmacion.php — Confirmación de reserva.
  * Referencia: Documentación Sección 05.2 y 06.2
+ * 
+ * CORRECCIÓN CRÍTICA: Las rutas de config/ deben usar ../../ (2 niveles arriba)
+ * porque este archivo está en client/carrito/ (nivel 2 desde raíz)
  */
 
 session_start();
-require_once "../config/database.php";
-require_once "../config/constants.php";
+
+/* 
+ * Rutas corregidas — 2 niveles hacia arriba desde client/carrito/
+ * ../ sería para client/index.php (nivel 1)
+ * ../../ es para client/carrito/*.php (nivel 2)
+ */
+require_once "../../config/database.php";
+require_once "../../config/constants.php";
 
 /* Validar sesión de cliente */
 if (!isset($_SESSION["cliente_id"])) {
@@ -41,9 +50,10 @@ if (!$reserva) {
 /* Limpiar ID de confirmación */
 unset($_SESSION["reserva_confirmacion_id"]);
 
-$page_title = "Reserva Confirmada — " . SITE_NAME;
+$page_title = "Reserva Confirmada — Hotel Salitre";
 $extra_stylesheets = ["assets/css/client/carrito.css"];
 
+/* Includes — 1 nivel arriba desde client/carrito/ */
 require_once "../includes/header.php";
 require_once "../includes/nav.php";
 ?>

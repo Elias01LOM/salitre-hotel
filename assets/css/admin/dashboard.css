@@ -139,9 +139,13 @@ body.admin-body {
   background: rgba(255, 255, 255, 0.04);
 }
 .sidebar__nav-item a.active {
-  color: var(--adm-accent);
-  background: var(--adm-accent-dim);
-  border-left-color: var(--adm-accent);
+  color: #fff;
+  background: var(--color-accent, #6C8062);
+  border-left-color: transparent;
+  opacity: 1;
+}
+.sidebar__nav-item a.active svg {
+  filter: brightness(0) invert(1);
 }
 
 /* Definimos los estilos para los íconos de navegación */

@@ -38,34 +38,30 @@ foreach ($fotos_galeria as $f) {
 
 <div class="page-offset"></div>
 
-<section class="detalle section-pad">
-    <div class="container container--wide detalle__layout">
-        
-        <!-- Galería (60%) -->
+<section class="detalle-page section-pad">
+    <div class="container container--wide">
+        <!-- Galería (100% Top) -->
         <div class="detalle-galeria fade-in" data-delay="0">
-            <div class="detalle-galeria__main">
+            <div class="gallery-main-container">
                 <!-- 
                   RECURSO: Imagen de <?= htmlspecialchars((string)$espacio["nombre"], ENT_QUOTES, 'UTF-8') ?>
                   FORMATO: WebP con fallback JPG
                   DIMENSIONES: 1200x800px
-                  UBICACIÓN: assets/img/client/espacios/<?= htmlspecialchars((string)$espacio["slug"], ENT_QUOTES, 'UTF-8') ?>.webp
-                  NOTA: El usuario proporcionará este recurso (Tarea 6)
-                  TEMPORAL: Se muestra placeholder mientras no exista
                 -->
                 <?php if (!empty($todas_fotos)) : ?>
                     <picture>
                         <source srcset="<?= htmlspecialchars($base . $todas_fotos[0], ENT_QUOTES, 'UTF-8') ?>" type="image/webp">
-                        <img id="main-gallery-img" src="<?= htmlspecialchars($base . $todas_fotos[0], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?>" data-idx="0">
+                        <img class="gallery-main" id="main-gallery-img" src="<?= htmlspecialchars($base . $todas_fotos[0], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?>" data-idx="0">
                     </picture>
                 <?php else : ?>
-                    <div class="img-placeholder" style="aspect-ratio: 4/3;">
+                    <div class="img-placeholder gallery-main" style="aspect-ratio: 16/9;">
                         <span><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?> - Principal</span>
                     </div>
                 <?php endif; ?>
             </div>
             
             <?php if (count($todas_fotos) > 1) : ?>
-                <div class="detalle-galeria__thumbs">
+                <div class="detalle-galeria__thumbs mt-4">
                     <?php foreach ($todas_fotos as $idx => $foto) : ?>
                         <div class="detalle-galeria__thumb <?= $idx === 0 ? 'active' : '' ?>">
                             <img src="<?= htmlspecialchars($base . $foto, ENT_QUOTES, 'UTF-8') ?>" alt="Miniatura <?= $idx+1 ?>" data-full="<?= htmlspecialchars($base . $foto, ENT_QUOTES, 'UTF-8') ?>">
@@ -75,76 +71,88 @@ foreach ($fotos_galeria as $f) {
             <?php endif; ?>
         </div>
 
-        <!-- Info (40%) -->
-        <div class="detalle-info fade-in" data-delay="100">
-            <span class="badge badge--accent"><?= htmlspecialchars((string)$espacio['tipo'], ENT_QUOTES, 'UTF-8') ?></span>
-            <h1 class="detalle-info__title"><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></h1>
-            <p class="detalle-info__desc text-muted"><?= nl2br(htmlspecialchars((string)$espacio['descripcion'], ENT_QUOTES, 'UTF-8')) ?></p>
-            
-            <div class="detalle-info__meta grid grid-2 gap-4">
-                <div class="meta-card">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="meta-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    <span><strong>Capacidad:</strong> <?= (int)$espacio['capacidad'] ?> pers.</span>
+        <!-- Content Grid (65/35) -->
+        <div class="detalle-grid mt-8">
+            <!-- Info (65%) -->
+            <div class="detalle-info fade-in" data-delay="100">
+                <div class="detalle-header mb-6">
+                    <span class="badge badge--accent"><?= htmlspecialchars((string)$espacio['tipo'], ENT_QUOTES, 'UTF-8') ?></span>
+                    <h1 class="detalle-info__title mt-2"><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></h1>
+                    <p class="detalle-precio mb-4">
+                        $<?= number_format((float)$espacio['precio_noche'], 0) ?> <span class="period text-sm">/noche</span>
+                    </p>
                 </div>
-                <!-- Aquí se incluirían amenities de alto nivel como WiFi si se guardaran por separado,
-                     usaremos el array existente para todos. -->
-            </div>
 
-            <div class="divider"></div>
-            
-            <h3 class="detalle-info__subtitle">Amenidades</h3>
-            <?php if (!empty($amenidades)) : ?>
-                <ul class="detalle-info__amenities">
-                    <?php foreach ($amenidades as $amenidad) : ?>
-                        <li>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            <?= htmlspecialchars((string)$amenidad, ENT_QUOTES, 'UTF-8') ?>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else : ?>
-                <p class="text-muted">No indicadas.</p>
-            <?php endif; ?>
+                <div class="detalle-descripcion mb-8">
+                    <h3 class="text-xl mb-4">Descripción</h3>
+                    <p class="text-muted"><?= nl2br(htmlspecialchars((string)$espacio['descripcion'], ENT_QUOTES, 'UTF-8')) ?></p>
+                </div>
+                
+                <div class="detalle-amenidades mb-8">
+                    <h3 class="text-xl mb-4">Amenidades</h3>
+                    <?php if (!empty($amenidades)) : ?>
+                        <ul class="amenidades-list">
+                            <?php foreach ($amenidades as $amenidad) : ?>
+                                <li class="amenidad-item">
+                                    <span class="amenidad-check text-green-600">✓</span>
+                                    <span><?= htmlspecialchars((string)$amenidad, ENT_QUOTES, 'UTF-8') ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else : ?>
+                        <p class="text-muted">No indicadas.</p>
+                    <?php endif; ?>
+                </div>
 
-        </div>
-
-        <!-- 
-          Panel de Reserva — Fuera del wrapper .fade-in para ser siempre visible.
-          El botón inicia disabled y se habilita vía JS (espacios.js) al seleccionar fechas.
-          Referencia: Documentación Sección 05.2 (Flujo Principal)
-        -->
-        <div class="detalle-booking-panel">
-            <div class="detalle-booking-panel__header flex-between mb-4">
-                <div class="detalle-booking-price">
-                    <strong>$<?= number_format((float)$espacio['precio_noche'], 0) ?></strong> <small>/noche</small>
+                <div class="detalle-capacidad mt-6 mb-6 p-4 bg-gray-100 rounded flex items-center gap-2">
+                    <span class="capacidad-icon text-xl">👥</span>
+                    <span>Capacidad: <?= (int)$espacio['capacidad'] ?> pers.</span>
                 </div>
             </div>
 
-            <form id="booking-form" action="<?= $base ?>client/carrito/agregar.php" method="POST">
-                <input type="hidden" name="espacio_id" value="<?= (int)$espacio['id'] ?>">
-                
-                <div class="booking-dates">
-                    <div class="field">
-                        <label for="fecha_entrada" class="field__label">Check-in</label>
-                        <input type="date" id="fecha_entrada" name="fecha_entrada" class="field__input required" min="<?= date('Y-m-d') ?>" required>
+            <!-- Panel de Reserva Sticky (35%) -->
+            <aside class="detalle-booking-panel fade-in" data-delay="200">
+                <div class="booking-card">
+                    <div class="booking-price text-center mb-6 pb-4 border-b">
+                        <span class="price text-3xl font-bold">$<?= number_format((float)$espacio['precio_noche'], 0) ?></span>
+                        <span class="period">/noche</span>
                     </div>
-                    <div class="field">
-                        <label for="fecha_salida" class="field__label">Check-out</label>
-                        <input type="date" id="fecha_salida" name="fecha_salida" class="field__input required" disabled required>
-                    </div>
-                </div>
-                
-                <div id="booking-total-preview" class="booking-preview mt-4" style="display:none;">
-                    <div class="flex-between">
-                        <span><span id="booking-nights">0</span> noches</span>
-                        <strong>$ <span id="booking-subtotal">0</span></strong>
-                    </div>
-                </div>
 
-                <button type="submit" class="btn btn-primary btn-lg w-full mt-6" id="btn-add-cart" disabled>
-                    Reservar Fechas
-                </button>
-            </form>
+                    <form id="booking-form" action="<?= $base ?>client/carrito/agregar.php" method="POST">
+                        <input type="hidden" name="espacio_id" value="<?= (int)$espacio['id'] ?>">
+                        
+                        <div class="booking-dates">
+                            <div class="date-field">
+                                <label for="fecha_entrada" class="block text-sm text-gray-500 mb-1">Check-in</label>
+                                <input type="date" id="fecha_entrada" name="fecha_entrada" class="w-full p-2 border rounded" min="<?= date('Y-m-d') ?>" required>
+                            </div>
+                            <div class="date-field">
+                                <label for="fecha_salida" class="block text-sm text-gray-500 mb-1">Check-out</label>
+                                <input type="date" id="fecha_salida" name="fecha_salida" class="w-full p-2 border rounded" disabled required>
+                            </div>
+                        </div>
+
+                        <div class="booking-capacity mt-4 text-sm text-gray-600">
+                            <span>👥 Capacidad: <?= (int)$espacio['capacidad'] ?> pers.</span>
+                        </div>
+                        
+                        <div id="booking-total-preview" class="booking-preview mt-4 p-3 bg-gray-50 rounded" style="display:none;">
+                            <div class="flex justify-between w-full">
+                                <span><span id="booking-nights">0</span> noches</span>
+                                <strong>$ <span id="booking-subtotal">0</span></strong>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full w-full mt-6" id="btn-add-cart" disabled>
+                            Reservar Fechas
+                        </button>
+                        
+                        <p class="booking-note mt-3 text-center text-gray-500">
+                            <small>No se realizará ningún cargo hasta confirmar.</small>
+                        </p>
+                    </form>
+                </div>
+            </aside>
         </div>
     </div>
 </section>

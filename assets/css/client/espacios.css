@@ -336,3 +336,150 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* 
+ * DETALLE DE ESPACIO — Grid 65/35
+ * Referencia: Documentación Sección 06.1
+ */
+.detalle-page {
+    padding-top: 72px; /* Altura del navbar */
+}
+
+.detalle-galeria {
+    margin-bottom: var(--space-8);
+}
+
+.gallery-main-container {
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+}
+
+.gallery-main {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detalle-content {
+    padding: var(--space-8) 0;
+}
+
+.detalle-grid {
+    display: grid;
+    grid-template-columns: 65% 35%;
+    gap: var(--space-8);
+}
+
+.detalle-header {
+    margin-bottom: var(--space-6);
+}
+
+.detalle-header h1 {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    margin: var(--space-2) 0;
+}
+
+.detalle-precio {
+    font-size: var(--text-2xl);
+    color: var(--color-accent);
+}
+
+.detalle-descripcion,
+.detalle-amenidades {
+    margin-bottom: var(--space-8);
+}
+
+.detalle-descripcion h2,
+.detalle-amenidades h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    margin-bottom: var(--space-4);
+}
+
+.amenidades-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+
+.amenidad-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.amenidad-check {
+    color: var(--color-success);
+    font-weight: bold;
+}
+
+.detalle-capacidad {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background: var(--color-mid);
+    border-radius: var(--radius-md);
+}
+
+/* Booking Panel Sticky */
+.detalle-booking-panel {
+    position: relative;
+    max-width: 100%;
+}
+
+.booking-card {
+    background: var(--color-surface);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: calc(72px + var(--space-6)); /* Navbar + espacio */
+}
+
+.booking-price {
+    text-align: center;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.booking-price .price {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.booking-dates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.date-field label {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-1);
+}
+
+.date-field input {
+    width: 100%;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .detalle-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .booking-card {
+        position: static;
+    }
+}

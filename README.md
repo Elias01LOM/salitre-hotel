@@ -1,52 +1,68 @@
-HOTEL SALITRE
-Boutique hotel costero para nomadas digitales
+# Hotel Salitre — Boutique Hotel para Nómadas Digitales
+
 "Sal de la oficina. No del trabajo."
 
-REQUISITOS
+## Stack Tecnológico
 
-- XAMPP (Apache + MySQL/MariaDB)
-- PHP 8.0 o superior
-- Navegador moderno (Chrome, Firefox, Safari)
+- PHP 8+ (sin frameworks)
+- MySQL/MariaDB (XAMPP)
+- HTML5, CSS3, JavaScript Vanilla
+- Git/GitHub
 
-INSTALACION
+## Instalación
 
-1. Clonar repositorio en htdocs/salitre/
-2. Importar database/schema.sql en phpMyAdmin
-3. Importar database/seed.sql en phpMyAdmin
-4. Configurar config/constants.php (BASE_URL segun entorno)
-5. Acceder:
+### Requisitos
+- XAMPP (Apache + MySQL)
+- PHP 8.0+
+- Navegador moderno (Chrome, Firefox, Edge)
+
+### Pasos
+
+1. Clonar repositorio en `htdocs/` de XAMPP:
+   ```bash
+   git clone [URL] salitre
+   ```
+
+2. Importar base de datos:
+   - Abrir phpMyAdmin (http://localhost/phpmyadmin)
+   - Crear base de datos `salitre_db`
+   - Importar `database/schema.sql`
+   - Importar `database/seed.sql`
+
+3. Configurar conexión:
+   - Editar `config/database.php` si las credenciales difieren
+   - Por defecto: root / sin password (XAMPP local)
+
+4. Acceder al sitio:
    - Cliente: http://localhost/salitre/client/index.php
    - Admin: http://localhost/salitre/admin/login.php
 
-CREDENCIALES DE PRUEBA
+## Credenciales de Prueba
 
-Admin (Staff):
-- Email: admin@salitre.mx
-- Password: admin123
+| Rol | Email | Password |
+|-----|-------|----------|
+| Cliente | cliente@prueba.mx | cliente123 |
+| Staff | admin@salitre.mx | admin123 |
 
-Cliente (ejemplo en seed.sql):
-- Email: cliente@ejemplo.mx
-- Password: cliente123
+## Estructura del Proyecto
 
-ESTRUCTURA DEL PROYECTO
-
+```text
 salitre/
-├── client/          Vista publica (huespedes)
-├── admin/           Panel privado (staff)
-├── assets/          CSS, JS, imagenes, video
-├── config/          Configuracion y conexion BD
-├── database/        Scripts SQL (schema + seed)
-└── docs/            Documentacion tecnica
+├── client/          # Vista pública (huéspedes)
+├── admin/           # Panel privado (staff)
+├── assets/          # CSS, JS, imágenes, video
+├── config/          # Configuración y conexión BD
+├── database/        # Scripts SQL
+└── docs/            # Documentación técnica
+```
 
-NOTAS IMPORTANTES
+## Seguridad
 
-- Los recursos visuales (logo, imagenes de espacios, video hero) deben colocarse en sus carpetas respectivas
-- Ver documentacion_salitre_universal.pdf para especificaciones completas
-- Base de datos: salitre_db (utf8mb4, InnoDB)
+- Prepared statements en todas las queries
+- password_hash() para contraseñas
+- htmlspecialchars() en salidas
+- Protección de rutas admin con auth_check.php
 
-STACK TECNOLOGICO
+## Licencia
 
-- PHP 8+ (puro, sin frameworks)
-- MySQL/MariaDB con PDO y prepared statements
-- HTML5, CSS3, JavaScript Vanilla
-- XAMPP para entorno local
+Proyecto universitario — Uso educativo
