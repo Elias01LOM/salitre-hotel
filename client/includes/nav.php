@@ -2,38 +2,77 @@
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 $base = BASE_URL;
 ?>
-<nav class="nav">
-    <div class="nav-container">
-        <a href="<?= $base ?>client/index.php" class="nav__logo">
-            <img src="<?= $base ?>assets/img/logo/logo.svg" 
-                 alt="Hotel Salitre" class="nav__logo-img"
-                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'">
-            <span class="nav__logo-fallback" style="display:none;">Salitre</span>
-        </a>
-        <ul class="nav__list" id="nav-menu">
-            <li><a href="<?= $base ?>client/index.php" class="nav__link">Inicio</a></li>
-            <li><a href="<?= $base ?>client/espacios/index.php" class="nav__link">Espacios</a></li>
-            <li><a href="<?= $base ?>client/index.php#servicios" class="nav__link">Servicios</a></li>
-            <li><a href="<?= $base ?>client/agenda/index.php" class="nav__link">Agenda</a></li>
-            <li><a href="<?= $base ?>client/index.php#contacto" class="nav__link">Contacto</a></li>
-            <li><a href="<?= $base ?>client/proyecto/index.php" class="nav__link">Proyecto</a></li>
-        </ul>
-        <div class="nav__actions">
-            <?php if (isset($_SESSION['cliente_id'])): ?>
-                <a href="<?= $base ?>client/auth/perfil.php" class="btn btn-outline btn-sm">Mi Perfil</a>
-                <a href="<?= $base ?>client/auth/logout.php" class="btn btn-outline btn-sm">Salir</a>
-            <?php else: ?>
-                <a href="<?= $base ?>client/auth/login.php" class="btn btn-outline btn-sm">Iniciar</a>
-                <a href="<?= $base ?>client/espacios/index.php" class="btn btn-primary btn-sm">Reservar</a>
-            <?php endif; ?>
-        </div>
-        <button class="nav__hamburger" id="nav-toggle"
+<nav class="nav-main" role="navigation" aria-label="Navegación principal">
+    <!-- Logo -->
+    <a href="<?= BASE_URL ?>client/index.php" class="nav-logo">
+        <img src="<?= BASE_URL ?>assets/img/logo/logo.svg" 
+             alt="Hotel Salitre" 
+             width="120" 
+             height="40">
+    </a>
+    
+    <!-- Menú de navegación -->
+    <ul class="nav-menu" id="nav-menu">
+        <li><a href="<?= BASE_URL ?>client/index.php" class="nav-link">Inicio</a></li>
+        <li><a href="<?= BASE_URL ?>client/espacios/index.php" class="nav-link">Espacios</a></li>
+        <li><a href="<?= BASE_URL ?>client/index.php#servicios" class="nav-link">Servicios</a></li>
+        <li><a href="<?= BASE_URL ?>client/agenda/index.php" class="nav-link">Agenda</a></li>
+        <li><a href="<?= BASE_URL ?>client/index.php#contacto" class="nav-link">Contacto</a></li>
+        <li><a href="<?= BASE_URL ?>client/proyecto/index.php" class="nav-link">Proyecto</a></li>
+        <li><a href="<?= BASE_URL ?>client/ayuda/index.php" class="nav-link">Ayuda</a></li>
+    </ul>
+    
+    <!-- Botones de acción + Hamburger -->
+    <div class="nav-actions">
+        <?php if(isset($_SESSION["cliente_id"])): ?>
+            <a href="<?= BASE_URL ?>client/auth/perfil.php" class="btn btn-outline">Mi Perfil</a>
+            <a href="<?= BASE_URL ?>client/auth/logout.php" class="btn btn-outline">Salir</a>
+        <?php else: ?>
+            <a href="<?= BASE_URL ?>client/auth/login.php" class="btn btn-outline">Iniciar</a>
+            <a href="<?= BASE_URL ?>client/espacios/index.php" class="btn btn-primary">Reservar</a>
+        <?php endif; ?>
+        
+        <!-- Botón Hamburger – SIEMPRE VISIBLE -->
+        <button class="nav-burger" 
+                aria-expanded="false" 
+                aria-controls="nav-menu" 
                 aria-label="Abrir menú"
-                aria-expanded="false"
-                aria-controls="nav-menu">
-            <span></span>
-            <span></span>
-            <span></span>
+                type="button">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
         </button>
     </div>
 </nav>
+
+<!-- Menú desplegable independiente (solo desktop) -->
+<div class="nav-dropdown" id="nav-dropdown" aria-hidden="true">
+    <div class="dropdown-container">
+        <div class="dropdown-logo">
+            <img src="<?= BASE_URL ?>/assets/img/logo/logo.svg" alt="Salitre" width="120" height="40">
+        </div>
+        <hr class="dropdown-divider">
+        <ul class="dropdown-menu">
+            <li><a href="<?= BASE_URL ?>/client/index.php">Inicio</a></li>
+            <li><a href="<?= BASE_URL ?>/client/espacios/index.php">Espacios</a></li>
+            <li><a href="<?= BASE_URL ?>/client/index.php#servicios">Servicios</a></li>
+            <li><a href="<?= BASE_URL ?>/client/agenda/index.php">Agenda</a></li>
+            <li><a href="<?= BASE_URL ?>/client/index.php#contacto">Contacto</a></li>
+            <li><a href="<?= BASE_URL ?>/client/proyecto/index.php">Proyecto</a></li>
+            <li><a href="<?= BASE_URL ?>/client/ayuda/index.php">Ayuda</a></li>
+            <li class="dropdown-auth">
+                <?php if(isset($_SESSION["cliente_id"])): ?>
+                    <a href="<?= BASE_URL ?>/client/auth/perfil.php">Mi Cuenta</a>
+                    <a href="<?= BASE_URL ?>/client/auth/logout.php">Cerrar Sesión</a>
+                <?php else: ?>
+                    <a href="<?= BASE_URL ?>/client/auth/login.php">Iniciar Sesión</a>
+                    <a href="<?= BASE_URL ?>/client/auth/registro.php">Registrarse</a>
+                <?php endif; ?>
+            </li>
+            <li><a href="<?= BASE_URL ?>/client/espacios/index.php" class="dropdown-cta">Reservar</a></li>
+        </ul>
+    </div>
+</div>
+
+<!-- Overlay para cerrar el dropdown -->
+<div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>

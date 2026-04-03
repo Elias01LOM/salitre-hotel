@@ -40,109 +40,80 @@ $amenidades = json_decode((string)$espacio['amenidades'], true) ?? [];
 
 <div class="page-offset"></div>
 
-<section class="carrito section-pad">
+<main class="carrito-page">
     <div class="container container--wide">
         
-        <div class="carrito-header text-center mb-8 fade-in">
+        <div class="text-center mb-8 fade-in">
             <h1 class="section-title">Confirma tu reserva</h1>
             <p class="text-muted">Asegura tu lugar en la costa y mejora tu productividad.</p>
         </div>
 
-        <div class="carrito-layout grid">
+        <div class="carrito-grid">
             
-            <!-- Col Izquierda (65%) -->
+            <!-- Columna izquierda -->
             <div class="carrito-info fade-in" data-delay="100">
-                <div class="carrito-info__card space-card">
-                    <div class="carrito-info__media">
-                        <?php if (!empty($espacio['foto_principal'])) : ?>
-                            <picture>
-                                <img src="<?= htmlspecialchars($base . $espacio['foto_principal'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?>" loading="lazy">
-                            </picture>
-                        <?php else : ?>
-                            <div class="img-placeholder" style="aspect-ratio:3/2;">
-                                <span><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></span>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <div class="carrito-info__details">
-                        <span class="badge badge--accent mb-2"><?= htmlspecialchars((string)$espacio['tipo'], ENT_QUOTES, 'UTF-8') ?></span>
-                        <h2 class="text-xl fw-600 mb-2"><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></h2>
-                        <ul class="meta-list mb-4 text-sm text-muted">
-                            <li>Check-in: <strong><?= date('d M, y', strtotime($cart['fecha_entrada'])) ?></strong> a las 15:00 hrs.</li>
-                            <li>Check-out: <strong><?= date('d M, y', strtotime($cart['fecha_salida'])) ?></strong> a las 11:00 hrs.</li>
-                            <li>Noches totales: <strong><?= $cart['noches'] ?></strong></li>
-                        </ul>
-                        
-                        <div class="divider"></div>
-                        
-                        <h3 class="mb-2 fw-600 text-sm">El espacio incluye:</h3>
-                        <div class="carrito-amenities text-sm">
-                            <?php if (!empty($amenidades)) : ?>
-                                <ul style="display:flex; flex-wrap:wrap; gap:12px; color:var(--color-text-muted);">
-                                    <?php foreach (array_slice($amenidades, 0, 4) as $am) : ?>
-                                        <li style="display:inline-flex; align-items:center; gap:6px;">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                            <?= htmlspecialchars((string)$am, ENT_QUOTES, 'UTF-8') ?>
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            <?php endif; ?>
+                <div class="carrito-foto">
+                    <?php if (!empty($espacio['foto_principal'])) : ?>
+                        <picture>
+                            <source srcset="<?= htmlspecialchars($base . str_replace('.jpg', '.webp', $espacio['foto_principal']), ENT_QUOTES, 'UTF-8') ?>" type="image/webp">
+                            <img src="<?= htmlspecialchars($base . $espacio['foto_principal'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?>" loading="lazy">
+                        </picture>
+                    <?php else : ?>
+                        <div class="img-placeholder">
+                            <span><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></span>
                         </div>
+                    <?php endif; ?>
+                </div>
+                
+                <div class="carrito-detalles">
+                    <span class="badge badge--accent mb-2"><?= htmlspecialchars((string)$espacio['tipo'], ENT_QUOTES, 'UTF-8') ?></span>
+                    <h2><?= htmlspecialchars((string)$espacio['nombre'], ENT_QUOTES, 'UTF-8') ?></h2>
+                    
+                    <div class="carrito-fechas text-sm text-muted">
+                        <div>Check-in: <strong><?= date('d M, Y', strtotime($cart['fecha_entrada'])) ?></strong></div>
+                        <div>Check-out: <strong><?= date('d M, Y', strtotime($cart['fecha_salida'])) ?></strong></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Col Derecha (35%) Sticky -->
-            <div class="carrito-summary fade-in" data-delay="200">
-                <div class="summary-card">
-                    <h2 class="summary-card__title">Desglose de Costos</h2>
-                    
-                    <ul class="summary-list">
-                        <li class="flex-between">
-                            <span>$<?= number_format((float)$espacio['precio_noche'], 0) ?> x <?= $cart['noches'] ?> noches</span>
-                            <span>$<?= number_format((float)$cart['subtotal'], 2) ?></span>
-                        </li>
-                        <li class="flex-between text-muted">
-                            <span>Fee de limpieza e integración</span>
-                            <span>$<?= number_format((float)$cart['limpieza'], 2) ?></span>
-                        </li>
-                        <li class="flex-between text-muted pb-3" style="border-bottom:1px solid var(--color-border);">
-                            <span>Impuestos (IVA <?= IVA * 100 ?>%)</span>
-                            <span>$<?= number_format((float)$cart['iva'], 2) ?></span>
-                        </li>
-                        <li class="flex-between summary-total pt-3">
-                            <span class="text-lg fw-600">Total</span>
-                            <span class="text-xl fw-700 text-accent">$<?= number_format((float)$cart['total'], 2) ?></span>
-                        </li>
-                    </ul>
+            <!-- Columna derecha -->
+            <div class="carrito-resumen fade-in" data-delay="200">
+                <h2>Desglose de Costos</h2>
+                
+                <div class="desglose-row">
+                    <span>$<?= number_format((float)$espacio['precio_noche'], 0) ?> x <?= $cart['noches'] ?> noches</span>
+                    <span>$<?= number_format((float)$cart['subtotal'], 2) ?></span>
+                </div>
+                <div class="desglose-row text-muted">
+                    <span>Fee de limpieza e integración</span>
+                    <span>$<?= number_format((float)$cart['limpieza'], 2) ?></span>
+                </div>
+                <div class="desglose-row text-muted pb-3">
+                    <span>Impuestos (IVA <?= IVA * 100 ?>%)</span>
+                    <span>$<?= number_format((float)$cart['iva'], 2) ?></span>
+                </div>
+                <div class="desglose-row total">
+                    <span class="text-lg fw-600">Total</span>
+                    <span class="value">$<?= number_format((float)$cart['total'], 2) ?></span>
+                </div>
 
-                    <form id="form-carrito-checkout" action="<?= $base ?>client/carrito/procesar_reserva.php" method="POST">
-                        <input type="hidden" name="cart_intent" value="1">
-                        <!-- Redirige directo a procesar_reserva -->
-                        <button type="submit" class="btn btn-primary btn-lg w-full mt-6" id="btn-request">Solicitar Reserva</button>
-                    </form>
+                <form id="form-carrito-checkout" action="<?= $base ?>client/carrito/procesar_reserva.php" method="POST">
+                    <input type="hidden" name="cart_intent" value="1">
+                    <button type="submit" class="btn btn-primary btn-lg w-full mt-6" id="btn-request">Solicitar Reserva</button>
+                </form>
 
-                    <div class="summary-policies mt-8 alert" style="flex-direction:column; background:var(--color-bg); border-left:3px solid var(--color-accent);">
-                        <h4 class="fw-600 mb-1 text-sm text-accent">Políticas de Cancelación</h4>
-                        <p class="text-xs text-muted">Reembolso del 100% si cancelas al menos 72 horas antes del check-in. De lo contrario se cobrará la primera noche.</p>
-                    </div>
+                <div class="carrito-politicas mt-6">
+                    <h3>Políticas de Cancelación</h3>
+                    <p>Reembolso del 100% si cancelas al menos 72 horas antes del check-in. De lo contrario se cobrará la primera noche.</p>
+                </div>
 
-                    <div class="summary-trust mt-6 flex-center gap-4 text-muted">
-                        <p class="text-xs" style="margin-bottom: var(--space-2);">Formas de pago aceptadas</p>
-                        <div class="trust-icons flex gap-2" style="flex-wrap:wrap;">
-                            <img src="<?= $base ?>assets/img/payments/visa.svg" alt="Visa" width="42" height="28" loading="eager">
-                            <img src="<?= $base ?>assets/img/payments/mastercard.svg" alt="Mastercard" width="42" height="28" loading="eager">
-                            <img src="<?= $base ?>assets/img/payments/amex.svg" alt="AMEX" width="42" height="28" loading="eager">
-                            <img src="<?= $base ?>assets/img/payments/paypal.svg" alt="PayPal" width="42" height="28" loading="eager">
-                            <img src="<?= $base ?>assets/img/payments/oxxo.svg" alt="OXXO" width="42" height="28" loading="eager">
-                        </div>
-                    </div>
+                <div class="carrito-seguridad mt-6">
+                    <p>Conexión segura 256-bit SSL</p>
                 </div>
             </div>
 
         </div>
     </div>
-</section>
+</main>
 
 <?php require dirname(__DIR__) . "/includes/footer.php"; ?>

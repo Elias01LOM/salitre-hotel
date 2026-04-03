@@ -81,7 +81,11 @@ function validatePasswords() {
     var pwd1 = document.getElementById("password").value;
     var pwd2 = document.getElementById("confirmar_password").value;
     if (pwd1 !== pwd2) {
-        alert("Las contraseñas no coinciden. Por favor, corrígelo.");
+        if (window.showAlert) {
+            window.showAlert.show('error', 'Error de registro', 'Las contraseñas no coinciden. Por favor, corrígelo.');
+        } else {
+            alert("Las contraseñas no coinciden. Por favor, corrígelo.");
+        }
         return false;
     }
     return true;

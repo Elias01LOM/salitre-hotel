@@ -16,26 +16,96 @@ require_once "../includes/nav.php";
 ?>
 
 <main class="proyecto-page" style="padding-top: calc(var(--space-20) + 72px); padding-bottom: var(--space-12); min-height: 100vh;">
-    <!-- Sección 1: Intro -->
-    <section id="intro" class="proyecto-intro" style="margin-bottom: var(--space-12);">
-        <div class="container container--wide">
-            <h1 style="font-family: var(--font-display); font-size: var(--text-4xl); margin-bottom: var(--space-4);">Sal de la oficina. No del trabajo.</h1>
-            <p class="lead" style="font-size: var(--text-xl); color: var(--color-text-muted); max-width: 800px; margin-bottom: var(--space-8);">
+    <!-- Sección 1: Intro — ACTUALIZADA -->
+    <section id="intro" class="proyecto-intro">
+        <div class="container">
+            <h1>Sal de la oficina. No del trabajo.</h1>
+            <p class="lead">
                 Hotel Salitre es un boutique hotel costero diseñado para nómadas digitales 
                 y trabajadores remotos que buscan productividad sin sacrificar el bienestar.
             </p>
-            <div class="pilares-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-6);">
-                <div class="pilar" style="background: var(--color-surface); padding: var(--space-6); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
-                    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">Conectividad</h3>
-                    <p style="color: var(--color-text-muted);">Fibra óptica garantizada. Sin caídas. Tu trabajo nunca se detiene.</p>
+            
+            <!-- Subsección: Sobre el Desarrollador -->
+            <div class="desarrollador-section fade-in">
+                <div class="desarrollador-content">
+                    <div class="desarrollador-foto">
+                        <!-- 
+                          RECURSO: Foto del desarrollador
+                          FORMATO: WebP con fallback JPG
+                          DIMENSIONES: 400x400px (cuadrada)
+                          UBICACIÓN: assets/img/client/team/desarrollador.webp
+                          NOTA: El usuario proporcionará este recurso
+                          TEMPORAL: Se muestra placeholder mientras no exista
+                          -->
+                        <div class="img-placeholder img-circular">
+                            <span>Foto</span>
+                        </div>
+                    </div>
+                    <div class="desarrollador-info">
+                        <h2>Sobre el Desarrollador</h2>
+                        <p>
+                            [TEXTO DE PRUEBA — El usuario editará después]
+                            Soy un desarrollador apasionado por crear experiencias digitales 
+                            que combinan funcionalidad con diseño. Este proyecto representa 
+                            mi compromiso con la excelencia técnica y la innovación.
+                        </p>
+                        <p>
+                            Especializado en desarrollo web full-stack con enfoque en 
+                            arquitecturas limpias y experiencias de usuario intuitivas.
+                        </p>
+                    </div>
                 </div>
-                <div class="pilar" style="background: var(--color-surface); padding: var(--space-6); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
-                    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">Ergonomía</h3>
-                    <p style="color: var(--color-text-muted);">Escritorios reales, sillas corporativas, monitores externos.</p>
+            </div>
+            
+            <!-- Subsección: Sobre el Proyecto -->
+            <div class="proyecto-info-section fade-in">
+                <h2>Sobre el Proyecto</h2>
+                <p>
+                    Hotel Salitre nació como una respuesta a la creciente necesidad de 
+                    espacios que integren trabajo y bienestar. Este sitio web fue 
+                    desarrollado desde cero siguiendo las mejores prácticas de la industria.
+                </p>
+            </div>
+            
+            <!-- Subsección: Herramientas y Tecnologías -->
+            <div class="herramientas-section fade-in">
+                <h2>Herramientas y Tecnologías</h2>
+                <div class="herramientas-grid">
+                    <div class="herramienta-item">
+                        <div class="herramienta-icon">🌐</div>
+                        <h3>Frontend</h3>
+                        <p>HTML5 · CSS3 · JavaScript Vanilla</p>
+                    </div>
+                    <div class="herramienta-item">
+                        <div class="herramienta-icon">⚙️</div>
+                        <h3>Backend</h3>
+                        <p>PHP 8+ · PDO · MySQL</p>
+                    </div>
+                    <div class="herramienta-item">
+                        <div class="herramienta-icon">🗄️</div>
+                        <h3>Base de Datos</h3>
+                        <p>MySQL · MariaDB (XAMPP)</p>
+                    </div>
+                    <div class="herramienta-item">
+                        <div class="herramienta-icon">🛠️</div>
+                        <h3>Desarrollo</h3>
+                        <p>VS Code · Git · GitHub</p>
+                    </div>
                 </div>
-                <div class="pilar" style="background: var(--color-surface); padding: var(--space-6); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
-                    <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-2);">Diseño sin fricción</h3>
-                    <p style="color: var(--color-text-muted);">Entorno que no distrae. Minimalismo funcional.</p>
+            </div>
+            
+            <div class="pilares-grid">
+                <div class="pilar">
+                    <h3>Conectividad</h3>
+                    <p>Fibra óptica garantizada. Sin caídas. Tu trabajo nunca se detiene.</p>
+                </div>
+                <div class="pilar">
+                    <h3>Ergonomía</h3>
+                    <p>Escritorios reales, sillas corporativas, monitores externos.</p>
+                </div>
+                <div class="pilar">
+                    <h3>Diseño sin fricción</h3>
+                    <p>Entorno que no distrae. Minimalismo funcional.</p>
                 </div>
             </div>
         </div>

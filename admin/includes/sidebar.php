@@ -36,7 +36,24 @@ $nav_items = [
     <p class="sidebar__nav-section">Menú</p>
     <ul class="sidebar__nav-list">
 <?php foreach ($nav_items as $item) :
-    $is_active = ($current === $item['file'] || strpos($_SERVER['PHP_SELF'], '/' . $item['file'] . '/') !== false);
+    // Extraer qué sección es analizando el href (ej: admin/espacios/...)
+    $is_active = false;
+    $pagina_actual = basename($_SERVER["PHP_SELF"]);
+    
+    // Si estamos en index.php y el link es a index.php
+    if ($pagina_actual === 'index.php' && strpos($item['href'], 'index.php') !== false) {
+        $is_active = true;
+    } 
+    // Para las otras secciones, comprobar si la url actual contiene el path
+    // ej: si href es admin/espacios/listar.php, sacamos "espacios"
+    else if ($pagina_actual !== 'index.php' && strpos($item['href'], 'index.php') === false) {
+        $partes = explode('/', parse_url($item['href'], PHP_URL_PATH));
+        $seccion = count($partes) >= 2 ? $partes[count($partes)-2] : '';
+        if ($seccion && strpos($_SERVER["REQUEST_URI"], '/' . $seccion . '/') !== false) {
+            $is_active = true;
+        }
+    }
+    
     $active_class = $is_active ? ' active' : '';
 ?>
       <li class="sidebar__nav-item">

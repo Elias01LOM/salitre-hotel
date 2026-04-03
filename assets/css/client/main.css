@@ -1,3 +1,236 @@
+/* ====================================================
+   A. NAVBAR
+   ==================================================== */
+/* 
+ * NAVBAR + HAMBURGER MENU — Cliente
+ * Referencia: Documentación Sección 07.2
+ */
+
+/* ========================================
+   NAVBAR BASE
+   ======================================== */
+.nav-main {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(248, 248, 245, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    padding: var(--space-4) var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-main.scrolled {
+    background: rgba(248, 248, 245, 0.98);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-3) var(--space-6);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.nav-logo:hover {
+  color: var(--color-accent);
+}
+
+.nav-logo img {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ========================================
+   MENÚ DE NAVEGACIÓN — DESKTOP
+   ======================================== */
+@media (min-width: 1280px) {
+    .nav-menu {
+        display: flex;
+        gap: var(--space-6);
+        position: static;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        width: auto;
+        list-style: none; /* Just to clear ol/ul defaults */
+    }
+    
+    .nav-burger {
+        display: flex; /* SIEMPRE VISIBLE */
+    }
+}
+
+/* ========================================
+   MENÚ DE NAVEGACIÓN — TABLET
+   ======================================== */
+@media (min-width: 768px) and (max-width: 1279px) {
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 50vw; /* Máximo 50% de la pantalla */
+        max-width: 400px;
+        height: 100vh;
+        background: var(--color-bg);
+        padding: calc(80px + var(--space-6)) var(--space-6) var(--space-6);
+        flex-direction: column;
+        transform: translateX(100%); /* Oculto a la derecha */
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out;
+        box-shadow: var(--shadow-lg);
+        z-index: 999;
+        overflow-y: auto;
+        list-style: none; /* Just to clear ol/ul defaults */
+    }
+    
+    .nav-menu.open {
+        transform: translateX(0); /* Visible */
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-burger {
+        display: flex; /* SIEMPRE VISIBLE */
+    }
+}
+
+/* ========================================
+   MENÚ DE NAVEGACIÓN — MOBILE
+   ======================================== */
+@media (max-width: 767px) {
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100vw; /* 100% en mobile */
+        height: 100vh;
+        background: var(--color-bg);
+        padding: calc(80px + var(--space-6)) var(--space-6) var(--space-6);
+        flex-direction: column;
+        transform: translateX(100%); /* Oculto a la derecha */
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out;
+        box-shadow: var(--shadow-lg);
+        z-index: 999;
+        overflow-y: auto;
+        list-style: none; /* Just to clear ol/ul defaults */
+    }
+    
+    .nav-menu.open {
+        transform: translateX(0); /* Visible */
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-burger {
+        display: flex; /* SIEMPRE VISIBLE */
+    }
+}
+
+/* ========================================
+   BOTÓN HAMBURGER
+   ======================================== */
+.nav-burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1001;
+    padding: 0;
+    margin-left: var(--space-4);
+}
+
+.hamburger-line {
+    width: 100%;
+    height: 2px;
+    background: var(--color-text);
+    transition: var(--transition);
+    transform-origin: center;
+}
+
+/* Animación a X cuando está abierto */
+.nav-burger[aria-expanded="true"] .hamburger-line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.nav-burger[aria-expanded="true"] .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-burger[aria-expanded="true"] .hamburger-line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ========================================
+   OVERLAY (fondo oscuro al abrir menú)
+   ======================================== */
+.nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(44, 53, 57, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 998;
+    pointer-events: none;
+}
+
+.nav-menu.open ~ .nav-overlay,
+body.nav-open .nav-overlay {
+    /* wait we must toggle the overlay with a class or just check body.nav-open since navmenu JS toggles overflow hidden on body but let's just make it triggered by body or we should just add active class in JS */
+}
+
+/* The prompt explicitly asks to add .active to .nav-overlay */
+.nav-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ========================================
+   LINKS DEL MENÚ
+   ======================================== */
+.nav-menu .nav-link {
+    display: block;
+    padding: var(--space-4);
+    font-size: var(--text-lg);
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.nav-menu .nav-link:hover {
+    color: var(--color-accent);
+    padding-left: var(--space-5);
+}
+
+
 /* ==================================================
    SALITRE â€” main.css (CLIENTE)
    Estilos base: navbar, footer, botones, animaciones
@@ -5,172 +238,6 @@
 
 /* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
-
-/* ====================================================
-   A. NAVBAR
-   Selectores exactos de client/includes/nav.php:
-   .nav / .nav-container / .nav__logo / .nav__list /
-   .nav__link / .nav__actions / .nav__hamburger
-==================================================== */
-
-/* 
- * Navbar fijo con fondo semi-transparente para legibilidad
- * sobre cualquier fondo (video hero, imÃ¡genes, colores oscuros).
- * Referencia: DocumentaciÃ³n SecciÃ³n 07.2 (Navbar Sticky + Hamburger)
- */
-.nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  padding: var(--space-4) 0;
-  background-color: rgba(248, 248, 245, 0.92); /* var(--color-bg) con 92% opacity */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-sm);
-  transition: var(--transition-slow);
-}
-
-/* Estado tras el scroll (main.js aÃ±ade esta clase) */
-.nav.scrolled {
-  background-color: rgba(248, 248, 245, 0.98);
-  box-shadow: var(--shadow-md);
-  padding: var(--space-3) 0;
-}
-
-.nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 var(--space-6);
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-}
-
-/* Logo */
-.nav__logo {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 700;
-  color: var(--color-text);
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-  transition: var(--transition);
-}
-
-.nav__logo:hover {
-  color: var(--color-accent);
-}
-
-.nav__logo-img {
-  height: 36px;
-  width: auto;
-  display: block;
-}
-
-.nav__logo-fallback {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-/* Lista de links */
-.nav__list {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  margin-left: auto;
-}
-
-.nav__link {
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-text);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  transition: var(--transition);
-  position: relative;
-}
-
-.nav__link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: var(--space-3);
-  right: var(--space-3);
-  height: 2px;
-  background-color: var(--color-accent);
-  border-radius: var(--radius-full);
-  transform: scaleX(0);
-  transition: transform 0.2s ease;
-}
-
-.nav__link:hover {
-  color: var(--color-accent);
-}
-
-.nav__link:hover::after {
-  transform: scaleX(1);
-}
-
-/* Acciones (botones de sesiÃ³n) */
-.nav__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-left: var(--space-4);
-  white-space: nowrap;
-}
-
-/* 
- * Hamburger â€” visible en todos los viewports para consistencia.
- * Orden: links | Ingresar | Registrarme | Menu
- * Referencia: Seccion 07.2 de documentacion
- */
-.nav__hamburger {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  width: 36px;
-  height: 36px;
-  padding: var(--space-2);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  margin-left: auto;
-  transition: var(--transition);
-}
-
-.nav__hamburger span {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background-color: var(--color-text);
-  border-radius: var(--radius-full);
-  transition: var(--transition);
-  transform-origin: center;
-}
-
-/* Hamburger animado cuando .open */
-.nav__hamburger.open span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-.nav__hamburger.open span:nth-child(2) {
-  opacity: 0;
-  transform: scaleX(0);
-}
-.nav__hamburger.open span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
-}
-
-/* Bloqueo de scroll del body */
-body.nav-open {
-  overflow: hidden;
-}
 
 /* ====================================================
    B. BOTONES (.btn)
@@ -558,72 +625,6 @@ body.nav-open {
 }
 
 @media (max-width: 768px) {
-  /* Navbar mobile */
-
-  .nav__list {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: min(300px, 80vw);
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-xl);
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    padding: var(--space-20) var(--space-6) var(--space-6);
-    margin-left: 0;
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-y: auto;
-  }
-
-  .nav__list.open {
-    transform: translateX(0);
-  }
-
-  .nav__list li {
-    width: 100%;
-  }
-
-  .nav__link {
-    display: block;
-    width: 100%;
-    padding: var(--space-4) var(--space-2);
-    font-size: var(--text-base);
-    border-bottom: 1px solid var(--color-border);
-    border-radius: 0;
-  }
-
-  .nav__link::after {
-    display: none;
-  }
-
-  .nav__actions {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    width: min(300px, 80vw);
-    background-color: var(--color-surface);
-    padding: var(--space-4) var(--space-6);
-    border-top: 1px solid var(--color-border);
-    margin-left: 0;
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .nav__list.open ~ .nav__actions,
-  .nav-open .nav__actions {
-    transform: translateX(0);
-  }
-
-  .nav__actions .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
   /* Footer */
   .footer__grid {
     grid-template-columns: 1fr;
@@ -656,4 +657,652 @@ body.nav-open {
   .section-title {
     font-size: var(--text-xl);
   }
+}
+
+/* 
+ * FOOTER â€” Estructura completa
+ * Referencia: DocumentaciÃ³n SecciÃ³n 06.1
+ */
+.footer {
+    background: var(--color-text);
+    color: var(--color-text-light);
+    padding: var(--space-12) 0 var(--space-6);
+    margin-top: var(--space-20);
+}
+
+.footer-top {
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--space-8);
+}
+
+.footer-logo img {
+    filter: brightness(0) invert(1); /* Logo blanco */
+    margin-bottom: var(--space-4);
+}
+
+.footer-tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+    margin-bottom: var(--space-8);
+}
+
+.footer-col h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-4);
+    color: var(--color-accent-light);
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: var(--space-2);
+}
+
+.footer-col ul li a {
+    color: var(--color-text-light);
+    opacity: 0.8;
+    transition: var(--transition);
+}
+
+.footer-col ul li a:hover {
+    opacity: 1;
+    color: var(--color-accent-light);
+}
+
+.footer-contact li {
+    opacity: 0.8;
+    margin-bottom: var(--space-3);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+}
+
+.footer-social {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.footer-social a {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--color-text-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-light);
+    opacity: 0.8;
+    transition: var(--transition);
+}
+
+.footer-social a:hover {
+    opacity: 1;
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+        gap: var(--space-4);
+        text-align: center;
+    }
+}
+
+/* 
+ * SISTEMA DE ALERTAS MODALES
+ * Referencia: DocumentaciÃ³n SecciÃ³n 07.2
+ */
+.salitre-alerts-container {
+    position: fixed;
+    bottom: var(--space-6);
+    right: var(--space-6);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    pointer-events: none; /* Permite clicks a travÃ©s del contenedor */
+}
+
+.salitre-alert {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-4) var(--space-5);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    min-width: 300px;
+    max-width: 400px;
+    pointer-events: auto; /* Reactiva clicks en la alerta */
+    position: relative;
+    overflow: hidden;
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.salitre-alert.is-visible {
+    transform: translateX(0);
+}
+
+.alert-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.alert-success .alert-icon { background: var(--color-success); }
+.alert-error .alert-icon { background: var(--color-danger); }
+.alert-warning .alert-icon { background: #f59e0b; }
+.alert-info .alert-icon { background: #3b82f6; }
+
+.alert-content {
+    flex-grow: 1;
+}
+
+.alert-title {
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+    color: var(--color-text);
+}
+
+.alert-message {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}
+
+.alert-close {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    margin-top: -2px;
+}
+
+.alert-close:hover {
+    color: var(--color-text);
+}
+
+.alert-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(0,0,0,0.1);
+    width: 100%;
+    transform-origin: left;
+    animation: alert-progress var(--duration) linear forwards;
+}
+
+.alert-success .alert-progress { background: var(--color-success); }
+.alert-error .alert-progress { background: var(--color-danger); }
+
+@keyframes alert-progress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .salitre-alerts-container {
+        bottom: var(--space-4);
+        right: var(--space-4);
+        left: var(--space-4);
+        align-items: stretch;
+    }
+    
+    .salitre-alert {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+
+
+
+
+
+/* ========================================
+   MENÚ HAMBURGER — CORRECCIÓN FINAL
+   Agregar al FINAL de main.css
+   Fecha: 2026-04-03
+   ======================================== */
+
+/* Desktop — menú visible por defecto */
+@media (min-width: 1280px) {
+    .nav-menu {
+        display: flex !important;
+        position: static !important;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        width: auto !important;
+        height: auto !important;
+        flex-direction: row !important;
+    }
+}
+
+/* Tablet y Mobile — menú controlado por hamburger */
+@media (max-width: 1279px) {
+    .nav-menu {
+        position: fixed !important;
+        top: 80px !important;
+        right: 0 !important;
+        width: 100vw !important;
+        max-width: 400px !important;
+        height: calc(100vh - 80px) !important;
+        background: var(--color-bg) !important;
+        flex-direction: column !important;
+        z-index: 999 !important;
+        
+        /* Estado cerrado — fuera de pantalla a la derecha */
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition: transform 0.3s ease-out !important;
+        overflow-y: auto !important;
+    }
+    
+    /* Estado abierto — visible */
+    .nav-menu.open {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
+
+/* Overlay — fondo oscuro */
+.nav-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(44, 53, 57, 0.5) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease !important;
+    z-index: 998 !important;
+}
+
+.nav-overlay.active {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Botón hamburger — SIEMPRE VISIBLE */
+.nav-burger {
+    display: flex !important;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+}
+
+/* Asegurar que el scroll se restaure */
+body.menu-open {
+    overflow: hidden !important;
+}
+
+/* ========================================
+   CORRECCIÓN: MENÚ VISIBLE EN DESKTOP
+   Agregar al FINAL de main.css
+   Fecha: 2026-04-03
+   ======================================== */
+
+/* Desktop (1280px en adelante) — MENÚ SIEMPRE VISIBLE */
+@media (min-width: 1280px) {
+    .nav-menu {
+        display: flex !important;
+        flex-direction: row !important;
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        gap: var(--space-6);
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    
+    .nav-menu .nav-link {
+        display: block !important;
+        padding: var(--space-2) var(--space-3) !important;
+        border-bottom: none !important;
+    }
+    
+    /* El botón hamburger PUEDE permanecer visible en desktop */
+    .nav-burger {
+        display: flex !important;
+    }
+}
+
+/* Tablet (768px - 1279px) — Menú desplegable */
+@media (min-width: 768px) and (max-width: 1279px) {
+    .nav-menu {
+        position: fixed !important;
+        top: 80px !important;
+        right: 0 !important;
+        width: 100vw !important;
+        max-width: 50vw !important;
+        max-width: 400px !important;
+        height: calc(100vh - 80px) !important;
+        flex-direction: column !important;
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+    
+    .nav-menu.open {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
+
+/* Mobile (<768px) — Menú desplegable full screen */
+@media (max-width: 767px) {
+    .nav-menu {
+        position: fixed !important;
+        top: 80px !important;
+        right: 0 !important;
+        width: 100vw !important;
+        height: calc(100vh - 80px) !important;
+        flex-direction: column !important;
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+    
+    .nav-menu.open {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
+
+/* ========================================
+   MENÚ DESPLEGABLE INDEPENDIENTE - DESKTOP
+   Agregar al FINAL de main.css
+   Fecha: 2026-04-03
+   ======================================== */
+
+/* Menú desplegable - oculto por defecto */
+.nav-dropdown {
+    position: fixed;
+    top: 80px; /* Debajo del navbar */
+    right: 0;
+    width: 400px;
+    max-width: 90vw;
+    max-height: calc(100vh - 80px);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    overflow-y: auto;
+}
+
+/* Menú desplegable - visible */
+.nav-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-container {
+    padding: var(--space-6);
+}
+
+.dropdown-logo {
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-4);
+    border-bottom: 2px solid var(--color-border);
+}
+
+.dropdown-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu li {
+    margin-bottom: var(--space-2);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.dropdown-menu a:hover {
+    background: var(--color-mid);
+    color: var(--color-accent);
+}
+
+.dropdown-auth {
+    padding-top: var(--space-4);
+    margin-top: var(--space-4);
+    border-top: 2px solid var(--color-border);
+}
+
+.dropdown-auth a {
+    display: block;
+    margin-bottom: var(--space-2);
+}
+
+.dropdown-menu .dropdown-cta {
+    background: var(--color-accent);
+    color: var(--color-text-light);
+    text-align: center;
+    font-weight: 600;
+    margin-top: var(--space-4);
+}
+
+.dropdown-menu .dropdown-cta:hover {
+    background: var(--color-accent-dark);
+}
+
+/* Overlay */
+.nav-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(44, 53, 57, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 998;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.nav-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Solo mostrar en desktop (1280px+) */
+@media (min-width: 1280px) {
+    .nav-dropdown {
+        display: block;
+    }
+}
+
+/* Ocultar en mobile/tablet */
+@media (max-width: 1279px) {
+    .nav-dropdown {
+        display: none;
+    }
+}
+
+/* ========================================
+   CONSOLIDACIÃ“N FINAL â€“ NAVBAR Y MENÃšS
+   Agregar al FINAL de main.css
+   Override de reglas anteriores con !important
+   Referencia: DocumentaciÃ³n SecciÃ³n 07.2
+   ======================================== */
+
+/* Desktop (1280px+) â€“ Navbar fijo + dropdown opcional */
+@media (min-width: 1280px) {
+    /* Navbar base */
+    .nav-main {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+    
+    /* MenÃº principal visible por defecto */
+    .nav-menu {
+        display: flex !important;
+        flex-direction: row !important;
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        transform: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        gap: var(--space-6) !important;
+    }
+    
+    .nav-menu .nav-link {
+        display: block !important;
+        padding: var(--space-2) var(--space-3) !important;
+        border-bottom: none !important;
+    }
+    
+    /* Dropdown independiente (oculto por defecto) */
+    .nav-dropdown {
+        display: none !important;
+    }
+    
+    .nav-dropdown.active {
+        display: block !important;
+        position: fixed !important;
+        top: 80px !important;
+        right: 0 !important;
+        width: 400px !important;
+        max-width: 90vw !important;
+        max-height: calc(100vh - 80px) !important;
+        background: var(--color-surface) !important;
+        box-shadow: var(--shadow-lg) !important;
+        z-index: 999 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: translateY(0) !important;
+        overflow-y: auto !important;
+    }
+    
+    /* BotÃ³n hamburger siempre visible */
+    .nav-burger {
+        display: flex !important;
+    }
+}
+
+/* Tablet (768px - 1279px) â€“ MenÃº lateral */
+@media (min-width: 768px) and (max-width: 1279px) {
+    .nav-menu {
+        position: fixed !important;
+        top: 80px !important;
+        right: 0 !important;
+        width: 100vw !important;
+        max-width: 50vw !important;
+        max-width: 400px !important;
+        height: calc(100vh - 80px) !important;
+        flex-direction: column !important;
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+    
+    .nav-menu.open {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    .nav-dropdown {
+        display: none !important; /* Solo desktop */
+    }
+}
+
+/* Mobile (<768px) â€“ MenÃº full screen */
+@media (max-width: 767px) {
+    .nav-menu {
+        position: fixed !important;
+        top: 80px !important;
+        right: 0 !important;
+        width: 100vw !important;
+        height: calc(100vh - 80px) !important;
+        flex-direction: column !important;
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+    
+    .nav-menu.open {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    .nav-dropdown {
+        display: none !important; /* Solo desktop */
+    }
+}
+
+/* Overlay comÃºn */
+.nav-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(44, 53, 57, 0.5) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    z-index: 998 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.nav-overlay.active {
+    opacity: 1 !important;
+    visibility: visible !important;
 }
