@@ -5,7 +5,7 @@
         <!-- Definimos la franja superior (logo y tagline) -->
         <div class="footer-top">
             <div class="footer-logo">
-                <img src="<?= BASE_URL ?>assets/img/logo/logo.svg"
+                <img src="<?= BASE_URL ?>assets/img/logo/logo-white.png"
                      alt="Salitre"
                      width="120"
                      height="40">
@@ -33,7 +33,8 @@
                     <li><a href="<?= BASE_URL ?>client/proyecto/index.php#intro">Proyecto</a></li>
                     <li><a href="<?= BASE_URL ?>client/proyecto/index.php#conocenos">Conócenos</a></li>
                     <li><a href="<?= BASE_URL ?>client/proyecto/index.php#ubicacion">Ubicación</a></li>
-                    <li><a href="<?= BASE_URL ?>client/index.php#contacto">Contacto</a></li>
+                    <li><a href="<?= BASE_URL ?>client/contacto/index.php">Contacto</a></li>
+                    <li><a href="<?= BASE_URL ?>admin/login.php">Portal Staff</a></li>
                 </ul>
             </div>
             

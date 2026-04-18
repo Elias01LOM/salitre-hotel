@@ -18,7 +18,7 @@ $base = BASE_URL;
         <li><a href="<?= BASE_URL ?>client/espacios/index.php" class="nav-link">Espacios</a></li>
         <li><a href="<?= BASE_URL ?>client/index.php#servicios" class="nav-link">Servicios</a></li>
         <li><a href="<?= BASE_URL ?>client/agenda/index.php" class="nav-link">Agenda</a></li>
-        <li><a href="<?= BASE_URL ?>client/index.php#contacto" class="nav-link">Contacto</a></li>
+        <li><a href="<?= BASE_URL ?>client/contacto/index.php" class="nav-link">Contacto</a></li>
         <li><a href="<?= BASE_URL ?>client/proyecto/index.php" class="nav-link">Proyecto</a></li>
         <li><a href="<?= BASE_URL ?>client/ayuda/index.php" class="nav-link">Ayuda</a></li>
     </ul>
@@ -54,7 +54,7 @@ $base = BASE_URL;
             <li><a href="<?= BASE_URL ?>/client/espacios/index.php">Espacios</a></li>
             <li><a href="<?= BASE_URL ?>/client/index.php#servicios">Servicios</a></li>
             <li><a href="<?= BASE_URL ?>/client/agenda/index.php">Agenda</a></li>
-            <li><a href="<?= BASE_URL ?>/client/index.php#contacto">Contacto</a></li>
+            <li><a href="<?= BASE_URL ?>client/contacto/index.php">Contacto</a></li>
             <li><a href="<?= BASE_URL ?>/client/proyecto/index.php">Proyecto</a></li>
             <li><a href="<?= BASE_URL ?>/client/ayuda/index.php">Ayuda</a></li>
             <li class="dropdown-auth">

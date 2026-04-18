@@ -1,8 +1,0 @@
-/* ==================================================
-   SALITRE — main.css (ADMIN)
-   Punto de entrada CSS del panel de administración.
-   Importa dashboard.css (estilos estructurales del admin).
-   Las variables globales vienen de shared/variables.css.
-   ================================================== */
-
-@import url('dashboard.css');

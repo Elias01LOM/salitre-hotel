@@ -1,6 +1,6 @@
 -- Base de datos para Salitre
 
--- DROP DATABASE IF EXISTS salitre_db; # descomente unicamente si es necesario
+DROP DATABASE IF EXISTS salitre_db;
 
 CREATE DATABASE salitre_db
   CHARACTER SET utf8mb4
@@ -110,8 +110,10 @@ UPDATE espacios SET foto_principal = 'assets/img/client/espacios/loft-creativo.w
 UPDATE espacios SET foto_principal = 'assets/img/client/espacios/suite-salitre.webp' WHERE slug = 'suite-salitre';
 UPDATE espacios SET foto_principal = 'assets/img/client/espacios/villa-conexion.webp' WHERE slug = 'villa-conexion';
 
--- CLIENTE DE PRUEBA (password: cliente123)
+-- CLIENTE DE PRUEBA (password -> cliente123)
 INSERT INTO clientes (nombre, email, password, telefono) VALUES
 ('Cliente Prueba', 'cliente@prueba.mx',
  '$2y$10$YJ0fE1w2OASK0jXnJzFCYeWbYXbRx2Z4qR2kX0fvj5xN6MqT7bKGW',
  '5512345678');
+
+-- Fin del script de configuración inicial

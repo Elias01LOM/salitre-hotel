@@ -1,8 +1,8 @@
-# Salitre ∇ Hotel para Nómadas Digitales
+# Salitre - Hotel para Nómadas Digitales
 
 "Sal de la oficina. No del trabajo."
 
-- Salitre es un sitio web que simula la plataforma de un hotel boutique con catálogo de espacios, sistema de reservas y panel administrativo. Diseñado para nómadas digitales, freelancers y equipos remotos que buscan alojamiento con conectividad y ergonomía. Se combina una UX minimalista y patrones de seguridad reales para demostrar buenas prácticas de desarrollo web y un flujo completo cliente ↔ admin replicable en entornos Xampp.
+Salitre es un sitio web que simula la plataforma de un hotel boutique con catálogo de espacios, sistema de reservas y panel administrativo. Diseñado para nómadas digitales, freelancers y equipos remotos que buscan alojamiento con conectividad y ergonomía. Se combina una UX discreta y patrones de seguridad reales para demostrar buenas prácticas de desarrollo web y un flujo completo cliente <-> admin replicable en entornos Xampp.
 
 ## Stack Tecnológico
 
@@ -16,7 +16,7 @@
 ### Requisitos
 - Xampp (Apache + MySQL)
 - PHP 8.0+
-- Navegador moderno (Edge, Chrome, Firefox)
+- Navegador (Edge, Chrome, Firefox)
 
 ### Pasos de Instalación
 
@@ -41,7 +41,7 @@
 ## Credenciales de Prueba
 
 | Rol | Email | Password |
-|-----|-------|----------|
+|-|-|-|
 | Cliente | cliente@prueba.mx | cliente123 |
 | Staff | admin@salitre.mx | admin123 |
 
@@ -53,15 +53,22 @@ salitre/
 ├── admin/           # Panel privado (staff)
 ├── assets/          # CSS, JS, imágenes, video
 ├── config/          # Configuración y conexión BD
-├── database/        # Scripts SQL
-└── docs/            # Documentación técnica
+└── database/        # Scripts SQL
 ```
+
+## Arquitectura
+
+El proyecto está diseñado bajo un patrón **MVC pasivo modificado** de separación de intereses que persigue la mantenibilidad a largo plazo:
+- **Lógica Centralizada (`.php`):** Controladores únicos encargados de manejar las sesiones, constantes y las consultas preparadas PDO.
+- **Presentación Desvinculada (`.view.php`):** Entornos de diseño puro y plantillas visuales con inyecciones dinámicas seguras usando HTMLspecialchars. 
+- **Componentes (`includes/`):** Estructuras heredadas para la consistencia global (Modals, Headers, Navbars).
 
 ## Seguridad
 
 - Prepared statements en todas las queries
+- Patrón arquitectónico de aislamiento HTML / PHP
 - password_hash() para contraseñas
-- htmlspecialchars() en salidas
+- htmlspecialchars() en salidas de diseño
 - Protección de rutas admin con auth_check.php
 
 ## Licencia

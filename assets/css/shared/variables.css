@@ -25,12 +25,6 @@
   --color-warning:      #D97706;
   --color-info:         #2563EB;
   
-  /* Definimos los estilos para el panel de administración */
-  --admin-bg:           #1A1F1C;   /* Fondo del panel admin    */
-  --admin-surface:      #242B26;   /* Cards y sidebar del admin*/
-  --admin-border:       #2E3830;   /* Bordes del admin         */
-  --admin-text:         #E8EDE9;   /* Texto principal admin    */
-  --admin-text-muted:   #7A9080;   /* Texto secundario admin   */
 
   /* Definimos las fuentes - tipografia */
   --font-display:       "Playfair Display", Georgia, serif;

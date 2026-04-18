@@ -452,3 +452,7 @@
         position: static;
     }
 }
+
+.catalog-card__title-row {
+  align-items: flex-start;
+}

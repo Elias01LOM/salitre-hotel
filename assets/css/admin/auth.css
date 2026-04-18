@@ -1,19 +1,12 @@
-/* Declaramos las variables globales de estilo para la página de autenticación del admin */
+/* Importamos las variables globales de estilo para la página de autenticación del admin */
+@import 'variables.css';
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --adm-bg:        #0f0f0f;
-  --adm-surface:   #1a1a1a;
-  --adm-surface-2: #222222;
-  --adm-border:    #2e2e2e;
-  --adm-text:      #e8e8e8;
-  --adm-muted:     #888888;
-  --adm-accent:    #c8a96e;
-  --adm-danger:    #e05252;
-  --adm-radius:    0.5rem;
-  --adm-font:      'Inter', system-ui, sans-serif;
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
 body.auth-body {
   font-family: var(--adm-font);
   background: var(--adm-bg);
@@ -25,7 +18,7 @@ body.auth-body {
   color: var(--adm-text);
 }
 
-/* Definimos los estilos para la tarjeta de autenticación (card) */
+/* Definimos los estilos para la tarjeta de autenticación */
 .auth-card {
   width: 100%;
   max-width: 22rem;
@@ -35,7 +28,7 @@ body.auth-body {
   padding: 2.5rem 2rem;
 }
 
-/* Definimos los estilos para la marca de la tarjeta de autenticación (brand) */
+/* Definimos los estilos para la marca de la tarjeta de autenticación */
 .auth-card__brand {
   display: flex;
   align-items: center;
@@ -56,7 +49,7 @@ body.auth-body {
   margin-top: 0.25rem;
 }
 
-/* Definimos los estilos para el mensaje de error (error) */
+/* Definimos los estilos para el mensaje de error */
 .auth-error {
   background: rgba(224, 82, 82, 0.12);
   border: 1px solid rgba(224, 82, 82, 0.3);
@@ -67,7 +60,7 @@ body.auth-body {
   margin-bottom: 1.25rem;
 }
 
-/* Definimos los estilos para el formulario (form) */
+/* Definimos los estilos para el formulario */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -101,7 +94,7 @@ body.auth-body {
   margin-top: 0.5rem;
   padding: 0.75rem;
   background: var(--adm-accent);
-  color: #0f0f0f;
+  color: #fff;
   font-size: 0.9375rem;
   font-weight: 700;
   border: none;

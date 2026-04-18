@@ -13,16 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje = trim($_POST['mensaje'] ?? '');
 
     if (empty($nombre) || empty($email) || empty($mensaje)) {
-        header('Location: ' . BASE_URL . 'client/index.php?contacto=error#contacto');
+        header('Location: ' . BASE_URL . 'client/contacto/index.php?contacto=error');
         exit;
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        header('Location: ' . BASE_URL . 'client/index.php?contacto=error#contacto');
+        header('Location: ' . BASE_URL . 'client/contacto/index.php?contacto=error');
         exit;
     }
     // Validamos límites de longitud para prevenir abusos - 500 caracteres
     if (strlen($mensaje) > 500) {
-        header('Location: ' . BASE_URL . 'client/index.php?contacto=error#contacto');
+        header('Location: ' . BASE_URL . 'client/contacto/index.php?contacto=error');
         exit;
     }
     // 'htmlspecialchars()' nos ayuda a prevenir XSS cuando el staff lo lea
@@ -33,14 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo  = conectarDB();
         $stmt = $pdo->prepare('INSERT INTO contacto (nombre, email, mensaje) VALUES (?, ?, ?)');
         $stmt->execute([$nombre, $email, $mensaje]);
-        header('Location: ' . BASE_URL . 'client/index.php?contacto=ok#contacto');
+        header('Location: ' . BASE_URL . 'client/contacto/index.php?contacto=ok');
         exit;
     } catch (Throwable $e) {
         error_log('Error contacto: ' . $e->getMessage());
-        header('Location: ' . BASE_URL . 'client/index.php?contacto=error#contacto');
+        header('Location: ' . BASE_URL . 'client/contacto/index.php?contacto=error');
         exit;
     }
 } else {
-    header('Location: ' . BASE_URL . 'client/index.php');
+    header('Location: ' . BASE_URL . 'client/contacto/index.php');
     exit;
 }
