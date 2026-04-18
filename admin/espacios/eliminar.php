@@ -1,10 +1,10 @@
 <?php
-/* 'admin/espacios/eliminar.php' es la página para eliminar (desactivar) un espacio desde el panel de administración */
+/* 'admin/espacios/eliminar.php' es la página para desactivar un espacio desde el panel */
 declare(strict_types=1);
 require_once '../includes/auth_check.php';
-
 require_once dirname(__DIR__, 2) . '/config/constants.php';
 require_once dirname(__DIR__, 2) . '/config/database.php';
+
 // Sólo aceptamos 'POST' para protección básica contra activación por enlace 'GET'
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ' . BASE_URL . 'admin/espacios/listar.php');

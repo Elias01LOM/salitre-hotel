@@ -46,89 +46,9 @@
   gap: var(--space-2);
 }
 
-/* Definimos la estructura para el menú de navegación en desktop, tablet y mobile */
-@media (min-width: 1280px) {
-    .nav-menu {
-        display: flex;
-        gap: var(--space-6);
-        position: static;
-        transform: none !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        width: auto;
-        list-style: none;
-    }
-    .nav-burger {
-        display: flex;
-    }
-}
+/* Definimos la estructura para el menú de navegación y sus componentes */
 
-/* Definimos la estructura para el menú de navegación en tablet */
-@media (min-width: 768px) and (max-width: 1279px) {
-    .nav-menu {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 50vw; /* M�ximo 50% de la pantalla */
-        max-width: 400px;
-        height: 100vh;
-        background: var(--color-bg);
-        padding: calc(80px + var(--space-6)) var(--space-6) var(--space-6);
-        flex-direction: column;
-        transform: translateX(100%); /* Oculto a la derecha */
-        opacity: 0;
-        visibility: hidden;
-        transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out;
-        box-shadow: var(--shadow-lg);
-        z-index: 999;
-        overflow-y: auto;
-        list-style: none; /* Just to clear ol/ul defaults */
-    }
-    
-    .nav-menu.open {
-        transform: translateX(0);
-        opacity: 1;
-        visibility: visible;
-    }
-    
-    .nav-burger {
-        display: flex;
-    }
-}
-
-/* Definimos la estructura para el menú de navegación en mobile */
-@media (max-width: 767px) {
-    .nav-menu {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 100vw;
-        height: 100vh;
-        background: var(--color-bg);
-        padding: calc(80px + var(--space-6)) var(--space-6) var(--space-6);
-        flex-direction: column;
-        transform: translateX(100%);
-        opacity: 0;
-        visibility: hidden;
-        transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out;
-        box-shadow: var(--shadow-lg);
-        z-index: 999;
-        overflow-y: auto;
-        list-style: none;
-    }
-    
-    .nav-menu.open {
-        transform: translateX(0);
-        opacity: 1;
-        visibility: visible;
-    }
-    
-    .nav-burger {
-        display: flex;
-    }
-}
-
-/* Definimos la estructura para el 'hamburger' global */
+/* Componentes comunes (Hamburger, Overlay, Enlaces, Dropdown) */
 .nav-burger {
     display: flex;
     flex-direction: column;
@@ -151,7 +71,6 @@
     transform-origin: center;
 }
 
-/* Animación del hamburger al abrir el menú - X */
 .nav-burger[aria-expanded="true"] .hamburger-line:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
 }
@@ -164,7 +83,6 @@
     transform: translateY(-8px) rotate(-45deg);
 }
 
-/* Definimos la estructura para el overlay de fondo cuando el menú está abierto */
 .nav-overlay {
     position: fixed;
     top: 0;
@@ -179,18 +97,16 @@
     pointer-events: none;
 }
 
-.nav-menu.open ~ .nav-overlay,
-body.nav-open .nav-overlay {
-    /* El overlay se activa cuando el menú está abierto */
-}
-
 .nav-overlay.active {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
 }
 
-/* Definimos la estructura para los enlaces de navegación del menú lateral */
+body.menu-open {
+    overflow: hidden;
+}
+
 .nav-menu .nav-link {
     display: block;
     padding: var(--space-4);
@@ -204,6 +120,154 @@ body.nav-open .nav-overlay {
 .nav-menu .nav-link:hover {
     color: var(--color-accent);
     padding-left: var(--space-5);
+}
+
+/* Definimos la estructura para el menú desplegable independiente en desktop */
+.nav-dropdown {
+    position: fixed;
+    top: 80px; /* Debajo del navbar */
+    right: 0;
+    width: 400px;
+    max-width: 90vw;
+    max-height: calc(100vh - 80px);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-lg);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    overflow-y: auto;
+}
+
+.nav-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-container {
+    padding: var(--space-6);
+}
+
+.dropdown-logo {
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-4);
+    border-bottom: 2px solid var(--color-border);
+}
+
+.dropdown-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-menu li {
+    margin-bottom: var(--space-2);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+}
+
+.dropdown-menu a:hover {
+    background: var(--color-mid);
+    color: var(--color-accent);
+}
+
+.dropdown-auth {
+    padding-top: var(--space-4);
+    margin-top: var(--space-4);
+    border-top: 2px solid var(--color-border);
+}
+
+.dropdown-auth a {
+    display: block;
+    margin-bottom: var(--space-2);
+}
+
+.dropdown-menu .dropdown-cta {
+    background: var(--color-accent);
+    color: var(--color-text-light);
+    text-align: center;
+    font-weight: 600;
+    margin-top: var(--space-4);
+}
+
+.dropdown-menu .dropdown-cta:hover {
+    background: var(--color-accent-dark);
+}
+
+/* Responsive: Desktop */
+@media (min-width: 1280px) {
+    .nav-menu {
+        display: flex;
+        flex-direction: row;
+        gap: var(--space-6);
+        position: static;
+        width: auto;
+        height: auto;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        background: transparent;
+        box-shadow: none;
+        list-style: none;
+    }
+    .nav-menu .nav-link {
+        padding: var(--space-2) var(--space-3);
+        border-bottom: none;
+    }
+    .nav-burger {
+        display: flex;
+    }
+    .nav-dropdown {
+        display: block;
+    }
+}
+
+/* Responsive: Tablet y Mobile (hamburguesa) */
+@media (max-width: 1279px) {
+    .nav-menu {
+        position: fixed;
+        top: 80px;
+        right: 0;
+        width: 100vw;
+        height: calc(100vh - 80px);
+        background: var(--color-bg);
+        flex-direction: column;
+        transform: translateX(100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0.3s ease-out;
+        box-shadow: var(--shadow-lg);
+        z-index: 999;
+        overflow-y: auto;
+        list-style: none;
+        padding: var(--space-6);
+    }
+    .nav-menu.open {
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    .nav-burger {
+        display: flex;
+    }
+    .nav-dropdown {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+    .nav-menu {
+        max-width: 400px;
+    }
 }
 
 /* Definimos la estructura para el diseño global de las páginas internas del cliente */
@@ -629,7 +693,6 @@ body.nav-open .nav-overlay {
 }
 
 .footer-logo img {
-    filter: brightness(0) invert(1);
     margin-bottom: var(--space-4);
 }
 
@@ -837,386 +900,4 @@ body.nav-open .nav-overlay {
     }
 }
 
-/* Definimos la estructura para del menú */
-@media (min-width: 1280px) {
-    .nav-menu {
-        display: flex !important;
-        position: static !important;
-        transform: none !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        width: auto !important;
-        height: auto !important;
-        flex-direction: row !important;
-    }
-}
-
-/* Definimos la estructura para tablet y mobile - menú controlado por 'hamburger' */
-@media (max-width: 1279px) {
-    .nav-menu {
-        position: fixed !important;
-        top: 80px !important;
-        right: 0 !important;
-        width: 100vw !important;
-        max-width: 400px !important;
-        height: calc(100vh - 80px) !important;
-        background: var(--color-bg) !important;
-        flex-direction: column !important;
-        z-index: 999 !important;
-
-        transform: translateX(100%) !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        transition: transform 0.3s ease-out !important;
-        overflow-y: auto !important;
-    }
-
-    .nav-menu.open {
-        transform: translateX(0) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-}
-
-/* Definimos la estructura para el overlay de fondo cuando el menú está abierto */
-.nav-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: rgba(44, 53, 57, 0.5) !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    transition: opacity 0.3s ease !important;
-    z-index: 998 !important;
-}
-
-.nav-overlay.active {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* Definimos que el 'hamburger' se mantenga siempre visible - abierto */
-.nav-burger {
-    display: flex !important;
-    cursor: pointer !important;
-    z-index: 1000 !important;
-}
-
-/* Aseguramos que el scroll se restaure */
-body.menu-open {
-    overflow: hidden !important;
-}
-
-@media (min-width: 1280px) {
-    .nav-menu {
-        display: flex !important;
-        flex-direction: row !important;
-        position: static !important;
-        width: auto !important;
-        height: auto !important;
-        transform: none !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        gap: var(--space-6);
-        background: transparent !important;
-        box-shadow: none !important;
-    }
-    
-    .nav-menu .nav-link {
-        display: block !important;
-        padding: var(--space-2) var(--space-3) !important;
-        border-bottom: none !important;
-    }
-    
-    .nav-burger {
-        display: flex !important;
-    }
-}
-
-/* Estructura del menú desplegable lateral */
-@media (min-width: 768px) and (max-width: 1279px) {
-    .nav-menu {
-        position: fixed !important;
-        top: 80px !important;
-        right: 0 !important;
-        width: 100vw !important;
-        max-width: 50vw !important;
-        max-width: 400px !important;
-        height: calc(100vh - 80px) !important;
-        flex-direction: column !important;
-        transform: translateX(100%) !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-    }
-    
-    .nav-menu.open {
-        transform: translateX(0) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-}
-
-/* Nos seguramos que la estructura del menú desplegable se mantega abierta en mobile */
-@media (max-width: 767px) {
-    .nav-menu {
-        position: fixed !important;
-        top: 80px !important;
-        right: 0 !important;
-        width: 100vw !important;
-        height: calc(100vh - 80px) !important;
-        flex-direction: column !important;
-        transform: translateX(100%) !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-    }
-    
-    .nav-menu.open {
-        transform: translateX(0) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-}
-
-/* Definimos la estructura para el menú desplegable independiente en desktop */
-.nav-dropdown {
-    position: fixed;
-    top: 80px; /* Debajo del navbar */
-    right: 0;
-    width: 400px;
-    max-width: 90vw;
-    max-height: calc(100vh - 80px);
-    background: var(--color-surface);
-    box-shadow: var(--shadow-lg);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-20px);
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-    overflow-y: auto;
-}
-
-/* Definimos que el menú sea desplegable - visible */
-.nav-dropdown.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.dropdown-container {
-    padding: var(--space-6);
-}
-
-.dropdown-logo {
-    padding-bottom: var(--space-4);
-    margin-bottom: var(--space-4);
-    border-bottom: 2px solid var(--color-border);
-}
-
-.dropdown-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.dropdown-menu li {
-    margin-bottom: var(--space-2);
-}
-
-.dropdown-menu a {
-    display: block;
-    padding: var(--space-3) var(--space-4);
-    color: var(--color-text);
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    transition: var(--transition);
-}
-
-.dropdown-menu a:hover {
-    background: var(--color-mid);
-    color: var(--color-accent);
-}
-
-.dropdown-auth {
-    padding-top: var(--space-4);
-    margin-top: var(--space-4);
-    border-top: 2px solid var(--color-border);
-}
-
-.dropdown-auth a {
-    display: block;
-    margin-bottom: var(--space-2);
-}
-
-.dropdown-menu .dropdown-cta {
-    background: var(--color-accent);
-    color: var(--color-text-light);
-    text-align: center;
-    font-weight: 600;
-    margin-top: var(--space-4);
-}
-
-.dropdown-menu .dropdown-cta:hover {
-    background: var(--color-accent-dark);
-}
-
-/* Definimos la estructura del overlay */
-.nav-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(44, 53, 57, 0.5);
-    opacity: 0;
-    visibility: hidden;
-    z-index: 998;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.nav-overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* Solo mostramos en desktop */
-@media (min-width: 1280px) {
-    .nav-dropdown {
-        display: block;
-    }
-}
-
-/* Lo ocultamos en en mobile o tablet */
-@media (max-width: 1279px) {
-    .nav-dropdown {
-        display: none;
-    }
-}
-
-/* Definimos la estructura para desktop - menú horizontal con dropdown independiente */
-@media (min-width: 1280px) {
-    /* Navbar base */
-    .nav-main {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-    }
-    
-    /* Hacemos que el menú principal sea visible por defecto */
-    .nav-menu {
-        display: flex !important;
-        flex-direction: row !important;
-        position: static !important;
-        width: auto !important;
-        height: auto !important;
-        transform: none !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        gap: var(--space-6) !important;
-    }
-    
-    .nav-menu .nav-link {
-        display: block !important;
-        padding: var(--space-2) var(--space-3) !important;
-        border-bottom: none !important;
-    }
-    
-    /* Hacemos que el dropdown sea independiente (oculto por defecto) */
-    .nav-dropdown {
-        display: none !important;
-    }
-    
-    .nav-dropdown.active {
-        display: block !important;
-        position: fixed !important;
-        top: 80px !important;
-        right: 0 !important;
-        width: 400px !important;
-        max-width: 90vw !important;
-        max-height: calc(100vh - 80px) !important;
-        background: var(--color-surface) !important;
-        box-shadow: var(--shadow-lg) !important;
-        z-index: 999 !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        transform: translateY(0) !important;
-        overflow-y: auto !important;
-    }
-    
-    /* Hacemos que el botón 'hamburger' siempre sea visible */
-    .nav-burger {
-        display: flex !important;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 1279px) {
-    .nav-menu {
-        position: fixed !important;
-        top: 80px !important;
-        right: 0 !important;
-        width: 100vw !important;
-        max-width: 50vw !important;
-        max-width: 400px !important;
-        height: calc(100vh - 80px) !important;
-        flex-direction: column !important;
-        transform: translateX(100%) !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-    }
-    
-    .nav-menu.open {
-        transform: translateX(0) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-    
-    .nav-dropdown {
-        display: none !important; /* Solo desktop */
-    }
-}
-
-@media (max-width: 767px) {
-    .nav-menu {
-        position: fixed !important;
-        top: 80px !important;
-        right: 0 !important;
-        width: 100vw !important;
-        height: calc(100vh - 80px) !important;
-        flex-direction: column !important;
-        transform: translateX(100%) !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-    }
-    
-    .nav-menu.open {
-        transform: translateX(0) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-    }
-    
-    .nav-dropdown {
-        display: none !important; /* Solo desktop */
-    }
-}
-
-/* Definimos la estructura del overlay común */
-.nav-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: rgba(44, 53, 57, 0.5) !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    z-index: 998 !important;
-    transition: opacity 0.3s ease !important;
-}
-
-.nav-overlay.active {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
+/* Fin del archivo main.css - Parches eliminados */

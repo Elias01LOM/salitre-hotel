@@ -1,5 +1,5 @@
 <?php
-/* admin/contacto/procesar_lectura.php es el script que se encarga de marcar un mensaje de contacto como leído desde el panel de administración */
+/* 'admin/contacto/procesar_lectura.php' se encarga de marcar un mensaje de contacto como leído desde el panel de administración */
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . "/includes/auth_check.php";

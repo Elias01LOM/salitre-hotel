@@ -12,7 +12,7 @@ define('MONEDA', 'USD');
 /* Definimos las constantes del negocio para cálculos de reserva */
 define('SITE_NAME', 'Salitre');
 define('SITE_TAGLINE', 'Sal de la oficina. No del trabajo.');
-define('IVA', 0.16);              /* Se usa en 'client/carrito/agregar.php' */
-define('LIMPIEZA_FEE', 25.00);    /* Se usa en 'client/carrito/agregar.php' */
+define('IVA', 0.16);              /* Lo usamos en 'client/carrito/agregar.php' */
+define('LIMPIEZA_FEE', 25.00);    /* Lo usamos en 'client/carrito/agregar.php' */
 define('UPLOAD_PATH', __DIR__ . '/../assets/img/client/espacios/');
 ?>
