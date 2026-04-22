@@ -104,20 +104,11 @@
   </div>
 </section>
 
-<section id="servicios" class="servicios fade-in">
+<section id="servicios-cta" class="servicios-cta fade-in" style="padding: var(--space-16) 0; background-color: var(--color-surface); text-align: center; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
   <div class="index-container">
-    <h2 class="section-title">Más que una habitación</h2>
-    <div class="servicios__grid">
-<?php foreach ($services as $svc) : ?>
-      <article class="service-card">
-        <div class="service-card__icon" aria-hidden="true">
-          <?= $service_icons[$svc['key']] ?? '' ?>
-        </div>
-        <h3 class="service-card__title"><?= htmlspecialchars($svc['nombre'], ENT_QUOTES, 'UTF-8') ?></h3>
-        <p class="service-card__text"><?= htmlspecialchars($svc['descripcion'], ENT_QUOTES, 'UTF-8') ?></p>
-      </article>
-<?php endforeach; ?>
-    </div>
+    <h2 class="section-title" style="margin-bottom: var(--space-4);">Más que una habitación</h2>
+    <p style="color: var(--color-text-muted); max-width: 600px; margin: 0 auto var(--space-8); font-size: var(--text-lg);">Descubre todas las amenidades, desde espacios de coworking hasta clases de yoga frente al mar, diseñadas para que tu trabajo y descanso fluyan.</p>
+    <a href="<?= $base ?>client/servicios/index.php" class="btn btn-primary" style="padding: var(--space-4) var(--space-8); font-size: var(--text-base);">Ver todos los servicios</a>
   </div>
 </section>
 

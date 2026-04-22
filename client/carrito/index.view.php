@@ -83,4 +83,4 @@
     </div>
 </main>
 
-<?php require dirname(__DIR__) . "/../includes/footer.php"; ?>
+<?php require dirname(__DIR__) . "/includes/footer.php"; ?>

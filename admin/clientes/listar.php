@@ -6,7 +6,7 @@ require_once '../includes/auth_check.php';
 require_once dirname(__DIR__, 2) . '/config/constants.php';
 require_once dirname(__DIR__, 2) . '/config/database.php';
 
-// Se hace la consulta para obtener el listado de clientes junto con el conteo de reservas asociadas a cada cliente
+// Hacemos la consulta para obtener el listado de clientes junto con el conteo de reservas asociadas a cada cliente
 $clientes = [];
 try {
     $pdo  = conectarDB();

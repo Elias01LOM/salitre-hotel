@@ -15,9 +15,9 @@
 
   <div class="content-area">
 
-    <?php if ($flash) : ?>
-    <div class="flash flash--<?php echo htmlspecialchars($flash['type'], ENT_QUOTES, 'UTF-8'); ?>" role="status">
-      <?php echo htmlspecialchars($flash['text'], ENT_QUOTES, 'UTF-8'); ?>
+    <?php if (isset($_GET['success']) && $_GET['success'] === 'marked_read') : ?>
+    <div class="flash flash--success" role="status">
+      Mensaje marcado como leído.
     </div>
     <?php endif; ?>
 
