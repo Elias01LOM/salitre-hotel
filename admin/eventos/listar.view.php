@@ -10,13 +10,13 @@
     <div class="content-area">
         
         <?php if (isset($_GET['success'])): ?>
-            <div class="alert alert--success mb-4" style="background:var(--color-bg); padding:1rem; border-left:4px solid var(--color-success);">
-                <?php if ($_GET['success'] === 'created'): ?>
-                    <p>Evento creado exitosamente.</p>
-                <?php elseif ($_GET['success'] === 'updated'): ?>
-                    <p>Evento actualizado exitosamente.</p>
-                <?php endif; ?>
-            </div>
+        <div class="flash flash--success" role="status">
+            <?php if ($_GET['success'] === 'created'): ?>
+                Evento creado exitosamente.
+            <?php elseif ($_GET['success'] === 'updated'): ?>
+                Evento actualizado exitosamente.
+            <?php endif; ?>
+        </div>
         <?php endif; ?>
 
         <div class="card p-0">

@@ -13,9 +13,9 @@
     </div>
 
     <?php if (isset($_GET['success']) && $_GET['success'] === 'updated') : ?>
-        <div class="alert alert--success mb-4" style="background:var(--color-bg); padding:1rem; border-left:4px solid var(--color-success);">
-            <p>Estado de la reserva actualizado exitosamente.</p>
-        </div>
+    <div class="flash flash--success" role="status">
+      Estado de la reserva actualizado exitosamente.
+    </div>
     <?php endif; ?>
 
     <div class="data-table-wrap">

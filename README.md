@@ -2,80 +2,81 @@
 
 "Sal de la oficina. No del trabajo."
 
-Salitre es un sitio web que simula la plataforma de un hotel boutique con catálogo de espacios, sistema de reservas y panel administrativo. Diseñado para nómadas digitales, freelancers y equipos remotos que buscan alojamiento con conectividad y ergonomía. Se combina una UX discreta y patrones de seguridad reales para demostrar buenas prácticas de desarrollo web y un flujo completo cliente <-> admin replicable en entornos Xampp.
+Salitre es un sitio web que simula la plataforma de un hotel boutique con catálogo de espacios, sistema de reservas y panel administrativo. Diseñado para nómadas digitales, freelancers y equipos remotos que buscan alojamiento con conectividad y ergonomía. Se combina una UX discreta y patrones de seguridad reales para demostrar buenas prácticas de desarrollo web y un flujo completo cliente <-> admin replicable en entornos locales.
 
 ## Stack Tecnológico
 
-- PHP 8+ (sin frameworks)
-- MySQL/MariaDB (Xampp)
-- HTML5, CSS3, JavaScript Vanilla
-- Git/GitHub
+- PHP 8.2+ (Nativo, sin frameworks)
+- MySQL/MariaDB (Vía XAMPP)
+- HTML5, CSS3 Vanilla, JavaScript Vanilla
+- Git/GitHub para control de versiones
 
-## Instalación
+## Instalación y Entorno
 
-### Requisitos
-- Xampp (Apache + MySQL)
-- PHP 8.0+
-- Navegador (Edge, Chrome, Firefox)
+### Requisitos Reales
+- XAMPP (Apache + MySQL)
+- PHP 8.2 o superior
+- Navegador web (Edge, Chrome, Firefox)
 
-### Pasos de Instalación
+### Pasos de Instalación en XAMPP
 
-1. Clone el repositorio en la carpeta 'htdocs/' de Xampp:
+1. **Clonar repositorio:** Clona el proyecto dentro de la carpeta pública de XAMPP (generalmente `C:\xampp\htdocs\`).
    ```bash
-   git clone [URL] salitre
+   git clone [URL_DEL_REPOSITORIO] salitre
    ```
+2. **Inicializar la Base de datos:**
+   - Abre phpMyAdmin a través de `http://localhost/phpmyadmin`.
+   - Crea una nueva base de datos con el nombre exacto `salitre_db` (cotejamiento sugerido: `utf8mb4_unicode_ci`).
+   - Ve a la pestaña Importar y sube el archivo físico `database/setup.sql` ubicado en la raíz del proyecto.
+3. **Validar las Credenciales de conexión:**
+   - El ecosistema utiliza credenciales base de XAMPP por defecto. Si esto varía drásticamente en tu setup local, edita libremente el archivo `config/database.php`.
+   - Ajusta `$host`, `$dbname`, `$username` y `$password` según tu entorno de servidor.
 
-2. Importe la base de datos:
-   - Abra phpMyAdmin - http://localhost/phpmyadmin
-   - Cree una base de datos llamada 'salitre_db'
-   - Importe 'database/setup.sql'
+### Accesos y Rutas de Módulos
 
-3. Configuración de la conexión:
-   - Edita 'config/database.php' si las credenciales difieren
-   - Por defecto: root / sin password - Xampp local
+El flujo se sostiene independientemente bajo dos módulos.
+- **Módulo Cliente (Huéspedes):** Interfaz pública que corre al visitar la ruta `http://localhost/salitre/client/`. (Resuelve a `client/index.php`).
+- **Módulo Admin (Personal/Staff):** Portal de back-office en la ruta `http://localhost/salitre/admin/`. Interceptar un acceso no validado redirecciona blindadamente a `http://localhost/salitre/admin/login.php`.
+*Puente intencional:* El `footer` del cliente público contiene un enlace con la leyenda *Portal Staff*, diseñado para vincular al operador del sitio directamente con el portal de gestión.
 
-4. Acceda al sitio:
-   - Cliente: http://localhost/salitre/client/index.php
-   - Admin: http://localhost/salitre/admin/login.php
+## Estructura del Proyecto Final
 
-## Credenciales de Prueba
-
-| Rol | Email | Password |
-|-|-|-|
-| Cliente | cliente@prueba.mx | cliente123 |
-| Staff | admin@salitre.mx | admin123 |
-
-## Estructura del Proyecto
+El árbol esquematizado y simplificado reflejado de la siguiente forma:
 
 ```text
 salitre/
-├── client/          # Vista pública (huéspedes)
-├── admin/           # Panel privado (staff)
-├── assets/          # CSS, JS, imágenes, video
-├── config/          # Configuración y conexión BD
-└── database/        # Scripts SQL
+├── admin/           # Lógica protegida, formularios de gestión y vistas corporativas del staff.
+├── assets/          # Todos los recursos web estáticos (CSS, JS, iconos, medias y videos gráficos).
+├── client/          # Controladores públicos, carrito y vistas accesibles para los clientes/huéspedes.
+├── config/          # Archivos rectores de variables absolutas y conexión persistente a MySQL.
+└── database/        # Script nativos .sql con DDL iniciales e inyección de testing data.
 ```
 
-## Arquitectura
+## Arquitectura y Convención de Archivos
 
-El proyecto está diseñado bajo un patrón **MVC pasivo modificado** de separación de intereses que persigue la mantenibilidad a largo plazo:
-- **Lógica Centralizada (`.php`):** Controladores únicos encargados de manejar las sesiones, constantes y las consultas preparadas PDO.
-- **Presentación Desvinculada (`.view.php`):** Entornos de diseño puro y plantillas visuales con inyecciones dinámicas seguras usando HTMLspecialchars. 
-- **Componentes (`includes/`):** Estructuras heredadas para la consistencia global (Modals, Headers, Navbars).
+Este proyecto implementa un sólido **MVC pasivo modificado** que aísla estrictamente el flujo lógico, logrando mantenibilidad gracias a la dualidad implementada:
+- **Archivos Controladores de Lógica (`.php`):** Procesan variables globales como `$_POST` y sesiones, formulan las conexiones e iteraciones de base de datos (`PDO::prepare`) y almacenan estructuras de arreglos puros listos para imprimirse.
+- **Archivos de Diseño y Vistas (`.view.php`):** Archivos delegados a conformar rigurosamente el esqueleto en HTML. Obtienen sus variables y dinámicas de su archivo homólogo inyectándolas usando interpolaciones protegidas con tags cortos y validaciones nativas de escapes de *Cross-Site Scripting* a través de `htmlspecialchars()`.
 
-## Seguridad
+## Perfiles de Prueba Pre-Instalados
 
-- Prepared statements en todas las queries
-- Patrón arquitectónico de aislamiento HTML / PHP
-- password_hash() para contraseñas
-- htmlspecialchars() en salidas de diseño
-- Protección de rutas admin con auth_check.php
+El script principal de base de datos incluye credenciales vivas listas para testear módulos restringidos y cruces de información integral.
 
-## Licencia
+| Rol Asignado | Correo Electrónico | Contraseña Activa |
+|---|---|---|
+| Cliente/Huésped | cliente@prueba.mx | cliente123 |
+| Empleado/Staff | admin@salitre.mx | admin123 |
 
-Proyecto universitario — Uso educativo
+## Políticas de Seguridad
 
-## Autor y Contacto
+- Extracción e inyección protegida empleando Prepared Statements en todos los controladores.
+- Contiene cifrado hermético asimétrico con `password_hash()`, resguarda tablas lógicas de credenciales.
+- Sanitización de salidas sistemática a pantallas mediante bloqueos `htmlspecialchars()`.
+- Middleware general unificado requiriendo verificación de tokens de sesión para blindaje de cada panel `admin/`.
 
-- Elías Ochoa
-- eliaslucinoochoamalaga@gmail.com
+## Licencia y Contacto
+
+Proyecto universitario — Creado y delimitado para usos puramente educativos y demostrativos en diseño avanzado.
+
+- **Firma Original:** Elías Ochoa
+- **Correo Electrónico:** eliaslucinoochoamalaga@gmail.com

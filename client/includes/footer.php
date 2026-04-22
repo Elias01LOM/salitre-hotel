@@ -20,7 +20,7 @@
                 <h3>Explorar</h3>
                 <ul>
                     <li><a href="<?= BASE_URL ?>client/espacios/index.php">Espacios</a></li>
-                    <li><a href="<?= BASE_URL ?>client/index.php#servicios">Servicios</a></li>
+                    <li><a href="<?= BASE_URL ?>client/servicios/index.php">Servicios</a></li>
                     <li><a href="<?= BASE_URL ?>client/agenda/index.php">Agenda</a></li>
                     <li><a href="<?= BASE_URL ?>client/proyecto/index.php">Proyecto</a></li>
                 </ul>

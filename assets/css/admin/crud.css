@@ -45,9 +45,9 @@
   font-weight: 500;
   margin-bottom: 1.25rem;
 }
-.flash--success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
-.flash--error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-.flash--info    { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+.flash--success { background: #d1fae5 !important; color: #065f46 !important; border: 1px solid #a7f3d0 !important; }
+.flash--error   { background: #fee2e2 !important; color: #991b1b !important; border: 1px solid #fca5a5 !important; }
+.flash--info    { background: #dbeafe !important; color: #1e40af !important; border: 1px solid #93c5fd !important; }
 
 /* Definimos los estilos para la tabla de datos */
 .data-table-wrap {

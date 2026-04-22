@@ -61,4 +61,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 // Definimos el título de la página y luego incluimos el header y sidebar comunes
 $page_title = "Editar Evento — Panel Salitre";
+$extra_css = ['assets/css/admin/crud.css'];
 require __DIR__ . '/editar.view.php';
